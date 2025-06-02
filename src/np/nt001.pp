@@ -87,7 +87,6 @@ None of this pretends to be exhaustive, I am concerned only with ideas which mig
   \item
 
     Ideas which represent major reconceptions of the purpose, methods and scope of application of HOL and its support.
-   
     
 \end{itemize}
 
@@ -96,7 +95,7 @@ Then the main ideas will be sketched, and then some degree of fleshing out of th
 
 \section{Some Philosophy, Some Strategy)
 
-  Here we go right over to the most radical ideas for the next generation of proof technology, before returning to the components which might best contribute to their realisation.
+  Here we go right over to my more radical ideas for the next generation of proof technology, before returning to the components which might best contribute to their realisation.
 
   \subsection{Epistemology}
 
@@ -107,7 +106,23 @@ Then the main ideas will be sketched, and then some degree of fleshing out of th
   The central contention is twofold, that all declarative propositions can be thought of as speaking of their subject matter in terms of some abstract model which has been shown to correspond to a suitable of degree of precision to some structure or phenomenon.
   From this perspective, all such declarative propositions about real world phenomena can be factorised into a demonstrable claim about the model, and an empirically supported correspondence between the model and the world.
 
-  
+Alongside this perspective on the scope of the underlying abstract representation which Cambridge HOL, I have an embryonic conception of a similarly scoped \emph{deductive paradigm) which I see taking over from and subsuming what I now conceive of as a purely computational paradigm.
+In the latter, when computers run programs, the operate on data the signficance of which may only be understood by certain users of the system, and execute algorithms which are precisely specified by programs, yielding results the signficance of which is not formally specified.
+In the deductive paradigm, the data are interpretable as propositons, and the computation as inference, and the results as concluded propositions.
+The specifications of programs effectively provide derived inference rules which the program algorithm effects.
+At present these ideas about the nature of this deductive paradigm are sketchy and it is part of this work to flesh them out.
+
+\subsection{Proof as Verified Computation}
+
+\subsection{Singularities, Fundamental Theories and Bootstraps}
+
+It is an important part of the strategy here to combine clarity about broadly scoped capabilities with focus on particular applications of them which are important because of their potential role in advancing the more general capability.
+From the science fiction literature we have the idea of "the coming singularity" where radical acceleration of pace is anticipated once we have AI capable of re-designing AI.
+In a more modest way we see in mathematics a number of "fundamental theorems" (that of arithmetic the best known) which are particularly important because of the way in which they facilitate the development of the broader theory.
+A third example, particularly associated with computing but more generally applicable, of "bootstrapping" on the analogy with trying to lift oneself up by pulling on one's bootstraps.
+
+What all these say in different ways is that chosing which asoects of a desired general capability to focus on in the early stages may startlingly advantageous.
+These ideas will be refined and exploited for strategic advantage.
 
 \section{First Sketches}
 
