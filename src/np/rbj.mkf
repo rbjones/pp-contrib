@@ -360,6 +360,8 @@ t056.ldd: t009.ldd
 t057.ldd: t009.ldd
 t058.ldd: t056.ldd
 
+nt001.ldd:
+
 # some variables and rules concerning document preparation
 
 $(PDFFILES): rbj.bib rbj2.bib rbjfmu.bst rbjpp.ist rbj.sty pppdf texpdf
@@ -547,7 +549,7 @@ doc:	docrel
 
 clean:
 	rm -f $(HOLTEXS) $(SMLFILES) $(LDDFILES)
-	rm -f *.aux *.bbl *.blg *.idx *.log *.lot *.sid *.sml *.toc $(HOLDBNAME).ldd *.th.pp
+	rm -f *.aux *.bbl *.blg *.err *.idx *.log *.lot *.out *.sid *.sid-e *.th.tex-e *.thna.pp *.thna.tex-e *.toc $(HOLDBNAME).ldd *.th.pp \#*\# *.stats.doc
 
 ######################################################################
 #

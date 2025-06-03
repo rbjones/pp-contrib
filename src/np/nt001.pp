@@ -1,5 +1,6 @@
 ﻿% $Id: np001.tex $ﬁ
 % bibref{rbjnp001} pdfname{np001}
+=TEX
 \documentclass[10pt,titlepage]{article}
 \usepackage{makeidx}
 \newcommand{\ignore}[1]{}
@@ -20,9 +21,9 @@
 \newcommand{\hreg}[2]{\href{#1}{#2}\footnote{\url{#1}}}
 \makeindex
 
-\title{\LARGE\bf Advancing Deductive Automation}
+\title{\LARGE\bf Advancing Deductive Automation and a Deductive Paradigm}
 \author{Roger~Bishop~Jones}
-\date{\small 2025/05/27}
+\date{\small 2025:05:27}
 
 
 \begin{document}
@@ -61,10 +62,10 @@
 
 \section{Introduction}
 
-My main interest is in progressing the most advanced and speculative ideas, albeit in perhaps modest ways.
-There are quite a number of ideas that I am interested in progressing, and I have presened a first sketch of these ideas in three tiers according to how radical the departure is from existing technology.
+My main interest is in progressing certain speculative ideas, albeit in perhaps modest ways.
+There are quite a number of ideas that I am interested in progressing, and I have presened a first sketch of these ideas in three tiers according to how radical the departure is from existing technology, and how readily these ideas can be progressed in the context of contemporary technology.
 
-THe start point for this exercise is ProofPower support for Cambridge HOL.
+The start point for this exercise is ProofPower support for Cambridge HOL.
 I won't go into the merit of that baseline, except to say that the logical system has the characteristics which seem to me most germinal for the roles which I envisage, and the implementation in ProofPower is one with which I am familiar, and which is well documented including a suite of formal specifications in HOL itself.
 
 The three tiers correspond to different levels of disruption of the baseline technology.
@@ -93,11 +94,11 @@ None of this pretends to be exhaustive, I am concerned only with ideas which mig
 The following materials with sketch first the strategic objectives, and some of the ideas which I think might make realisaton of those objectives possible.
 Then the main ideas will be sketched, and then some degree of fleshing out of the ideas.
 
-\section{Some Philosophy, Some Strategy)
+\section{Some Philosophy, Some Strategy}
 
   Here we go right over to my more radical ideas for the next generation of proof technology, before returning to the components which might best contribute to their realisation.
 
-  \subsection{Epistemology}
+ \subsection{Epistemology}
 
   Proof is the best way we know of conclusively establishing truth, and we might say, providing the most reliable ways to conclusively establish truths.
   The philosophical underpinning of this work comes in the epistemological thesis that a certain class of logical systems provide systematic underpinnings for the representation and qualified demonstration of all declarative truths.
@@ -106,7 +107,7 @@ Then the main ideas will be sketched, and then some degree of fleshing out of th
   The central contention is twofold, that all declarative propositions can be thought of as speaking of their subject matter in terms of some abstract model which has been shown to correspond to a suitable of degree of precision to some structure or phenomenon.
   From this perspective, all such declarative propositions about real world phenomena can be factorised into a demonstrable claim about the model, and an empirically supported correspondence between the model and the world.
 
-Alongside this perspective on the scope of the underlying abstract representation which Cambridge HOL, I have an embryonic conception of a similarly scoped \emph{deductive paradigm) which I see taking over from and subsuming what I now conceive of as a purely computational paradigm.
+Alongside this perspective on the scope of the underlying abstract representation which Cambridge HOL, I have an embryonic conception of a similarly scoped \emph{deductive paradigm} which I see taking over from and subsuming what I now conceive of as a purely computational paradigm.
 In the latter, when computers run programs, the operate on data the signficance of which may only be understood by certain users of the system, and execute algorithms which are precisely specified by programs, yielding results the signficance of which is not formally specified.
 In the deductive paradigm, the data are interpretable as propositons, and the computation as inference, and the results as concluded propositions.
 The specifications of programs effectively provide derived inference rules which the program algorithm effects.
