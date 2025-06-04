@@ -1260,7 +1260,7 @@ val lt⋎u_mono = save_pop_thm "lt⋎u_mono";
 =TEX
 
 \ignore{
-=SML
+=IGN
 set_goal([], ⌜UWellFounded $<⋎u⌝);
 a (lemma_tac ⌜$<⋎u = λs t⦁ Dcl⋎o s ⊂ Dcl⋎o t⌝);
 (* *** Goal "1" *** *)
@@ -1896,7 +1896,7 @@ We want to know that recursive definitions done in this way are well-founded.
 =TEX
 
 \ignore{
-=SML
+=IGN
 val ◁⋎u_def = get_spec ⌜$◁⋎u⌝;
 
 set_goal([], ⌜∀f β γ ⦁ β <⋎u γ ⇒ (γ ◁⋎u f) β = f β⌝);
@@ -1910,8 +1910,7 @@ stop;
 set_flag("pp_show_HOL_types", true);
 set_flag("pp_show_HOL_types", false);
 
-=SML
-stop;
+=IGN
 (* GOAL*1 *)
 set_goal([], ⌜∀α f⦁¬ SUb⋎o α = {} ⇒  Image⋎u (α ◁⋎u f, α) = Image⋎u (f, α)⌝);
 a (REPEAT strip_tac);
@@ -1937,7 +1936,7 @@ a (∃_tac ⌜y: 'b ℙ⌝ THEN asm_rewrite_tac[]);
 a (fc_tac [◁⋎o_fc]);
 a (∃_tac ⌜η⌝ THEN asm_rewrite_tac[]);
 val Image⋎o_◁⋎o_thm = save_pop_thm "Image⋎o_◁⋎o_thm";
-=SML
+=IGN
 new_conjecture(["SupIm⋎u_◁⋎u_thm"], ⌜∀γ f⦁ SupIm⋎u (γ ◁⋎u f, γ) = SupIm⋎u (f, γ)⌝);
 =IGN
 set_goal([], ⌜∀γ f⦁ SupIm⋎u (γ ◁⋎u f, γ) = SupIm⋎u (f, γ)⌝);
@@ -2004,7 +2003,7 @@ val Image⋎o_recursion_thm = save_pop_thm "Image⋎o_recursion_thm";
 =TEX
 
 \ignore{
-=SML
+=IGN
 val ord_rec⋎u_thm = save_thm("ord_rec⋎u_thm",
 	rewrite_rule [rewrite_rule [get_spec ⌜UWellFounded ⌝] lt⋎u_well_founded_thm] (∀_elim ⌜$<⋎u: 'a ℙ → 'a ℙ → BOOL⌝ tf_rec_thm2));
 

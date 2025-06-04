@@ -246,7 +246,7 @@ Now 0 goals on the main goal stack
 val it = ⊢ (∃ x y⦁ p (x, y)) ⇒ (∃ y x⦁ p (x, y)): THM
 =TEX
 The method we now have is open to greater transparency if the student wants to see what is going on behind the scenes.
-When the proof is expanded in that we get the following sequence:
+When the proof is expanded we get the following sequence:
 
 =SML
 set_goal([], ⌜(∃ x y⦁ p (x, y)) ⇒ (∃ y x⦁ p (x, y))⌝);
@@ -258,7 +258,7 @@ a strip_tac;
 (*  1 *)⌜p (x, y)⌝
 
 (* ?⊢ *)⌜∃ y x⦁ p (x, y)⌝
-=SML
+=TEX
 
 \section{Predicate Calculus in Z}
 

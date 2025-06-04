@@ -104,11 +104,7 @@ val nu = N 0;
 =TEX
 
 
-Over this sytax we can now define some functions (following Carnap, but pretty standard practice still).
-
-
-
-
+Over this syntax we can now define some functions (following Carnap, but pretty standard practice still).
 
 \appendix
 

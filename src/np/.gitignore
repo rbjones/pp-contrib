@@ -1,0 +1,7 @@
+*-e
+*.err
+*.th.pp
+*.thna.pp
+*.stats.doc
+*.out
+*~

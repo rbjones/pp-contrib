@@ -81,9 +81,9 @@ HOLPPS1= t000.pp \
 	t015.pp t016.pp t017.pp t018.pp t019.pp t020.pp t021.pp \
 	t022.pp t023.pp t024.pp t025.pp t026.pp t027.pp t031.pp \
 	t033.pp t034.pp t042.pp t043.pp t051.pp t052.pp t053.pp \
-	t054.pp t057.pp \
+	t054.pp t056.pp t057.pp t058.pp\
 	nt001.pp
-#  t056.pp t058.pp
+#  nt002.pp
 
 # Three file ppsvf cases 
 
@@ -108,14 +108,18 @@ HOLTEXS4=$(HOLPPS4:.pp=.tex)
 HOLTEXS= $(HOLTEXS1) $(HOLTEXS2) $(HOLTEXS3) $(HOLTEXS4)
 
 TTEX= \
-        t001a.tex t002.tex t003.tex t004.tex t005.tex t006.tex t007.tex \
-	t008.tex t009.tex t010.tex t011.tex t012.tex t013.tex t014.tex \
-	t015.tex t016.tex t017.tex t018.tex t019.tex t020.tex t021.tex \
-	t022.tex t023.tex t024.tex t025.tex t026.tex t027.tex t028a.tex \
-	t029a.tex t030a.tex t031.tex t032a.tex t033.tex t034.tex t037a.tex t038a.tex \
-	t039a.tex t040a.tex t041a.tex t042.tex t043.tex t044a.tex t045a.tex \
-	t046a.tex t047a.tex t048a.tex t049a.tex t050a.tex t051.tex t055.tex \
-	t057.tex
+        t001a.tex t002.tex t003.tex t004.tex t005.tex \
+	t006.tex t007.tex t008.tex t009.tex t010.tex \
+	t011.tex t012.tex t013.tex t014.tex t015.tex \
+	t016.tex t017.tex t018.tex t019.tex t020.tex \
+	t021.tex t022.tex t023.tex t024.tex t025.tex \
+	t026.tex t027.tex t028a.tex t029a.tex t030a.tex \
+	t031.tex t032a.tex t033.tex t034.tex \
+	t037a.tex t038a.tex t039a.tex t040a.tex \
+	t041a.tex t042.tex t043.tex t044a.tex t045a.tex \
+	t046a.tex t047a.tex t048a.tex t049a.tex t050a.tex \
+	t051.tex t052.tex t053.tex t054.tex t055.tex \
+	t056.tex t057.tex t058.tex
 	
 NTEX= \
       nt001.tex
@@ -471,8 +475,8 @@ packinglist:
 #
 ######################################################################
 
-t000abs.tex: $(TTEX)
-	./texindex2tex $(TTEX) > t000abs.tex
+t000abs.tex: $(TTEX) $(NTEX)
+	./texindex2tex $(TTEX) $(NTEX) > t000abs.tex
 
 doc_theories.tex: $(THTEXSok)
 	cat $(THTEXSok) >| doc_theories.tex
