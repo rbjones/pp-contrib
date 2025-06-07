@@ -1,0 +1,101 @@
+% $Id: t028a.tex,v 1.11 2010/12/17 22:32:14 rbj Exp $
+\documentclass[11pt]{article}
+\usepackage{latexsym}
+\usepackage{ProofPower}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+ 
+\ftlinepenalty=9999
+\usepackage{A4}
+
+% the following two modal operators come from the amsfonts package
+%\def\PrKI{\Diamond}	%Modify printing for \250
+%\def\PrKJ{\Box}		%Modify printing for \251
+
+%\def\PrJA{\|-}		%Modify printing for  (syntactic entailment)
+%\def\PrJA{\Vdash}	%Modify printing for  (syntactic entailment)
+%\def\PrJI{\models}	%Modify printing for  (semantic entailment)
+%\def\PrJI{\vDash}	%Modify printing for  (semantic entailment)
+
+\tabstop=0.4in
+\newcommand{\ignore}[1]{}
+
+\def\thyref#1{Appendix \ref{#1}}
+
+%\def\ExpName{\mbox{{\sf exp}}}
+%\def\Exp#1{\ExpName(#1)}
+
+
+\title{Aristotle's Logic and Metaphysics}
+\makeindex
+\usepackage[unicode]{hyperref}
+\hypersetup{pdfauthor={Roger Bishop Jones}, pdffitwindow=false}
+\hypersetup{colorlinks=true, urlcolor=red, citecolor=blue, filecolor=blue, linkcolor=blue}
+\author{Roger Bishop Jones}
+\date{\ }
+
+\begin{document}
+\begin{titlepage}
+\maketitle
+\begin{abstract}
+Formalisation in higher order logic of parts of Aristotle's logic and metaphysics.
+\end{abstract}
+\vfill
+
+\begin{centering}
+{\footnotesize
+
+Created 2009/05/21
+
+\input{t028i.tex}
+
+\href{http://www.rbjones.com/rbjpub/pp/doc/t028.pdf}
+{http://www.rbjones.com/rbjpub/pp/doc/t028.pdf}
+
+\copyright\ Roger Bishop Jones; Licenced under Gnu LGPL
+
+}%footnotesize
+\end{centering}
+
+\thispagestyle{empty}
+\end{titlepage}
+
+\newpage
+\addtocounter{page}{1}
+{\parskip=0pt\tableofcontents}
+
+\section{Prelude}
+
+This document is intended ultimately to form a chapter of Analyses of Analysis \cite{rbjb001}.
+
+Some of the material is not expected to be in that history including:
+\begin{itemize}
+\item the material up to and including the Prelude
+\item the Postscript and any material following it.
+\item possibly some other parts which have been marked for exclusion
+\end{itemize}
+
+My original purpose in preparing this document was to analyse certain semi-formal statements, relating to the philosophy of Aristotle, which were posted to the \href{http://hist-analytic.org}{\it hist-analytic} mailing list (\href{http://rbjones.com/pipermail/hist-analytic_rbjones.com/2009q2/000258.html}{see message in archive}) originating primarily in joint work by Grice \cite{grice88} and Code \cite{code88}.
+
+This has now been overtaken by various other philosophical motivations.
+
+Of these the most important for me at present lie in the perceived relevance of Aristotle's metaphysics to what I am trying elsewhere to write about {\it Metaphysical Positivism}.
+One tentative idea in this exposition involves three comparisons intended to illuminate the tension between essentialism and nominalism and inform the search for a middle ground.
+These three are between Plato and Aristotle, between Hume and Kant, and between Carnap and one or more twentieth century metaphysicians.
+
+For this purpose I seek some kind of understanding of Arstotle's essentialism, and it is for me natural to use formal modelling as one way of realising that understanding.
+
+Since my own backround in formal modelling comes from Computer Science and Information Systems Engineering, my own preferred languages, methods and tools, which I believe can be effectively applied to some kinds of philosophical problems, are probably alien to most if not all philosophers, and it is therefore a secondary purpose of this material to try to make this kind of modelling intelligible to some philosophers.
+This is not a presentation of established methods with proven philosophical benefits.
+It is an exploration and adaptation of methods from other domains to philosophy, and the benefits, are to be discovered, not merely displayed.
+
+The present state of the document is rather rough and ready.
+Formal modelling takes time, but presenting such material takes longer, and while I am hot on the trail of better, more illuminating models, the presentation will not be polished and transparent.
+
+Further discussion of what might become of this document in the future may be found in my postscript (Section \ref{POSTSCRIPT}).
+
+In this document, phrases in coloured text are hyperlinks, like on a web page, which will usually get you to another part of this document (the blue parts, the contents list, page numbers in the Index) but sometimes take you (the red bits) somewhere altogether different (if you happen to be online) like \href{http://rbjones.com/pipermail/hist-analytic_rbjones.com}{the hist-analytic archives}.
+
+For description of the formal languages, methods and tools used in or in producing this document see: \cite{rbjt029}.
+
+\section{Introduction}

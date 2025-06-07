@@ -1,0 +1,881 @@
+\def\VCDate{2025/06/01}\def\VCVersion{8d15189}
+\ignore{
+\begin{GFTSHOW}{Text dumped to file t050i.tex}
+\+\Backslash{}hypersetup\{pdfkeywords=RogerBishopJones\}\\
+\+\\
+\+Last Change \$ \$Date: 2013/01/10 16:35:58 \$ \$\\
+\+\\
+\+\$ \$Id: t050.doc,v 1.3 2013/01/10 16:35:58 rbj Exp \$ \$\\
+\end{GFTSHOW}
+}%ignore
+
+This is first a rough transcription into ProofPower of the simple HOL4 proof of the Church Rosser theorem for the pure combinatory logic, eventually perhaps to be upgraded to an illative combinatory logic.
+
+Beause I am exploring this approach with a view to extending it in certain ways, I will be making some changes along the way, above and beyond those arising from recasting the material to work in ProofPower HOL.
+
+The two principal extensions to this work which are of interest to me are firstly to go from pure combinatory logic to illative combinatory logics, which one could do with essentially the same term structure (but more combinators), and secondly to move to infinitary combinators.
+
+I therefore aim to maximise the applicability of each part of the development so that as little as possible will need to be reworked as I undertake those extensions.
+
+This may eventually result in the material being split across multiple theories and multiple documents, but initially, apart from the placement in t005 \cite{rbjt005} of general results on reflexive transitive closure I will stick to one theory.
+The strategy in this respect is firstly to separate out materials which do not depend on term structure (and present this first), then to adopt a structure for finitary terms which is extensible in the number of primitive combinators.
+
+
+Since we don't have a datatype package I will follow my own usual practice of using a set theoretic approach to the syntax.
+
+
+\begin{GFT}{SML}
+\+open\_theory "misc3";\\
+\+force\_new\_theory "\PrNL{}icl\PrNN{}";\\
+\+force\_new\_pc \PrNL{}"'icl"\PrNN{};\\
+\+merge\_pcs ["'savedthm\_cs\_∃\_proof"] "'icl";\\
+\end{GFT}
+\begin{GFT}{SML}
+\+set\_merge\_pcs ["misc31", "'icl"];\\
+\end{GFT}
+
+\section{Reduction}
+
+In this section I deal with matters which do not in the hol4 treatment depend upon the type of combinatory terms, and some matters which in the hol4 treatment do but need not.
+The latter requires some restructuring of the proof strategy
+
+\subsection{Diamond Preserved by RTC}
+
+In this section we obtain the result that the recursive transitive closure of a relation satisfying the diamond property also satisfies that property.
+
+The proof in the hol4 version is slick because RTC is redefined using a package for defining relations which delivers some nice induction principles.
+
+\begin{HOLConst}
+\+\PrNM{} \PrNL{}confluent\PrNN{}: ('a → 'a  → BOOL) → BOOL\\
+\PrPH{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}
+\+\PrNM{} ∀R⦁ confluent R ⇔ ∀x y z⦁ rtc R x y ∧ rtc R x z ⇒\\
+\+\PrNM{}             ∃u⦁ rtc R y u ∧ rtc R z u\\
+\end{HOLConst}
+
+\begin{HOLConst}
+\+\PrNM{} \PrNL{}normform\PrNN{}: ('a → 'a  → BOOL) → 'a →BOOL\\
+\PrPH{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}
+\+\PrNM{} ∀R x⦁ normform R x ⇔ ∀y⦁ ¬ R x y\\
+\end{HOLConst}
+
+\begin{GFT}{}
+\+\PrNL{}confluent\_normforms\_unique\PrNN{} =\\
+\+	⊢ ∀ R⦁ confluent R ⇒\\
+\+		(∀ x y z⦁ rtc R x y ∧ normform R y ∧ rtc R x z ∧ normform R z\\
+\+		⇒ y = z)\\
+\end{GFT}
+
+\ignore{
+\begin{GFT}{SML}
+\+val confluent\_def = get\_spec \PrKM{}confluent\PrKO{};\\
+\+val normform\_def = get\_spec \PrKM{}normform\PrKO{};\\
+\+\\
+\+set\_goal([], \PrKM{}∀R⦁ confluent R ⇒\\
+\+        ∀x y z⦁ rtc R x y ∧ normform R y ∧ rtc R x z ∧ normform R z\\
+\+                  ⇒ (y = z)\PrKO{});\\
+\+a (rewrite\_tac[confluent\_def, normform\_def]\\
+\+	THEN REPEAT strip\_tac);\\
+\+a (LIST\_SPEC\_NTH\_ASM\_T 5 [\PrKM{}x\PrKO{}, \PrKM{}y\PrKO{}, \PrKM{}z\PrKO{}] strip\_asm\_tac);\\
+\+a (REPEAT\_N 2 (POP\_ASM\_T ante\_tac)\\
+\+	THEN once\_rewrite\_tac[rtc\_cases]\\
+\+	THEN REPEAT strip\_tac\\
+\+	THEN\_TRY all\_asm\_ufc\_tac[]\\
+\+	THEN (SYM\_ASMS\_T rewrite\_tac));\\
+\+val confluent\_normforms\_unique = save\_pop\_thm "confluent\_normforms\_unique";\\
+\end{GFT}
+}%ignore
+
+
+\begin{HOLConst}
+\+\PrNM{} \PrNL{}diamond\PrNN{}: ('a → 'a  → BOOL) → BOOL\\
+\PrPH{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}
+\+\PrNM{} ∀R⦁ diamond R = ∀x y z⦁ R x y ∧ R x z ⇒ ∃u⦁ R y u ∧ R z u\\
+\end{HOLConst}
+
+\begin{GFT}{}
+\+\PrNL{}confluent\_diamond\_rtc\PrNN{} =\\
+\+	⊢ ∀ R⦁ confluent R ⇔ diamond (rtc R)\\
+\+\\
+\+\PrNL{}R\_rtc\_diamond\PrNN{} =\\
+\+	⊢ ∀ R⦁ diamond R ⇒ (∀ x p⦁ rtc R x p ⇒\\
+\+		(∀ z⦁ R x z ⇒ (∃ u⦁ rtc R p u ∧ rtc R z u)))\\
+\end{GFT}
+
+\ignore{
+\begin{GFT}{SML}
+\+val diamond\_def = get\_spec \PrKM{}diamond\PrKO{};\\
+\+\\
+\+set\_goal([], \PrKM{}∀R⦁ confluent R = diamond (rtc R)\PrKO{});\\
+\+a (rewrite\_tac[confluent\_def, diamond\_def]);\\
+\+val confluent\_diamond\_rtc = save\_pop\_thm "confluent\_diamond\_rtc";\\
+\+\\
+\+set\_goal([], \PrKM{}∀R⦁ diamond R ⇒\\
+\+         ∀x p⦁ rtc R x p ⇒\\
+\+               ∀z⦁ R x z ⇒\\
+\+                   ∃u⦁ rtc R p u ∧ rtc R z u\PrKO{});\\
+\+a (∀\_tac THEN strip\_tac);\\
+\+a (rtc\_ind\_tac THEN REPEAT strip\_tac);\\
+\+(* *** Goal "1" *** *)\\
+\+a (fc\_tac[diamond\_def]);\\
+\+a (fc\_tac [rtc\_incr\_thm]);\\
+\+a (∃\_tac \PrKM{}z\PrKO{} THEN asm\_rewrite\_tac[rtc\_def]);\\
+\+(* *** Goal "2" *** *)\\
+\+a (fc\_tac[diamond\_def]);\\
+\+a (all\_asm\_fc\_tac[]);\\
+\+a (spec\_nth\_asm\_tac 9 \PrKM{}u'\PrKO{});\\
+\+a (all\_fc\_tac [rtc\_incr\_thm]);\\
+\+a (all\_fc\_tac [tran\_rtc\_thm2]);\\
+\+a (∃\_tac \PrKM{}u''''\PrKO{} THEN asm\_rewrite\_tac[]);\\
+\+val R\_rtc\_diamond = save\_pop\_thm "R\_rtc\_diamond";\\
+\end{GFT}
+}%ignore
+
+$RTC\_RTC$ is the transitivity of reflexive transitive closure, which we have as $tran\_rtc\_thm2$.
+
+\begin{GFT}{}
+\+\PrNL{}diamond\_RTC\_lemma\PrNN{} =\\
+\+	⊢ ∀ R⦁ diamond R ⇒ (∀ x y⦁ rtc R x y\\
+\+		⇒ (∀ z⦁ rtc R x z ⇒ (∃ u⦁ rtc R y u ∧ rtc R z u)))\\
+\+\\
+\+\PrNL{}diamond\_RTC\PrNN{} =\\
+\+	⊢ ∀ R⦁ diamond R ⇒ diamond (rtc R)\\
+\end{GFT}
+
+\ignore{
+\begin{GFT}{SML}
+\+set\_goal([], \PrKM{}∀R⦁ diamond R ⇒\\
+\+       ∀x y⦁ rtc R x y ⇒ ∀z⦁ rtc R x z ⇒\\
+\+                               ∃u⦁ rtc R y u ∧ rtc R z u\PrKO{});\\
+\+a (strip\_tac THEN strip\_tac);\\
+\+a (rtc\_strongind\_tac THEN REPEAT strip\_tac);\\
+\+(* *** Goal "1" *** *)\\
+\+a (∃\_tac \PrKM{}z\PrKO{} THEN asm\_rewrite\_tac [rtc\_rules]);\\
+\+(* *** Goal "2" *** *)\\
+\+a (all\_ufc\_tac[R\_rtc\_diamond]);\\
+\+a (all\_asm\_ufc\_tac[]);\\
+\+a (all\_ufc\_tac[tran\_rtc\_thm2]);\\
+\+a (∃\_tac \PrKM{}u'\PrKO{} THEN contr\_tac);\\
+\+val diamond\_RTC\_lemma = save\_pop\_thm "diamond\_RTC\_lemma";\\
+\+\\
+\+set\_goal([], \PrKM{}∀R⦁ diamond R ⇒ diamond (rtc R)\PrKO{});\\
+\+a (REPEAT strip\_tac\\
+\+	THEN rewrite\_tac [diamond\_def]\\
+\+	THEN REPEAT strip\_tac\\
+\+	THEN all\_fc\_tac [diamond\_RTC\_lemma]);\\
+\+a (∃\_tac \PrKM{}u'\PrKO{} THEN contr\_tac);\\
+\+val diamond\_RTC = save\_pop\_thm "diamond\_RTC";\\
+\end{GFT}
+}%ignore
+
+
+
+
+\subsection{Further Results about Reduction Relations}
+
+In the hol4 proof reduction is defined over combinatory terms using a relation definition package which results in the following definition (this is the result of a modified notion admitting more combinatory constants):
+
+\begin{GFT}{}
+\+    redn\_def\\
+\+    |- \$--> =\\
+\+       (λa0 a1.\\
+\+          ∀-->' .\\
+\+            (∀a0 a1.\\
+\+               (∃x y f. (a0 = f \# x) ∧ (a1 = f \# y) ∧ -->' x y) ∨\\
+\+               (∃f g x. (a0 = f \# x) ∧ (a1 = g \# x) ∧ -->' f g) ∨\\
+\+               (∃y. a0 = C 0 \# a1 \# y) ∨\\
+\+               (∃f g x.\\
+\+                  (a0 = C 1 \# f \# g \# x) ∧ (a1 = f \# x \# (g \# x))) ∨\\
+\+               (∃x. (a0 = C 2 \# x \# x) ∧ (a1 = C 0)) ⇒\\
+\+               -->' a0 a1) ⇒\\
+\+            -->' a0 a1)\\
+\end{GFT}
+
+Of the various parts in this definition, the first two make this a congruence relation, i.e. reductions on parts yeild reductions on the whole, the third is the primitive reduction for K, the fourth for S, the fifth for Q.
+These are wrapped up to assert that the defined relation is the intersection of all relations closed under these rules.
+
+The
+
+
+So the natural way to proceed in the absence of the rule-based relation definition facility in hol4 is to define the primitive relations for each combinator, combine them (take the union or disjunction), form the congruence and take the transitive closure.
+
+
+\section{Combinatory Terms}
+
+\subsection{Introduction}
+
+In hol4 the syntax of combinatory logic is give as a single line definition of a recursive datatype.
+We can't do this in ProofPower, datatypes have to be manually cranked.
+This section replicates that process, and aims to replicate pretty closely what hol4 produces for that datatype.
+
+I did first of all modify the type to allow any number of combinatory constants after which the definition read:
+
+\begin{GFT}{hol4}
+\+val \_ = Hol\_datatype `CT = C of num | \# of CT => CT`;\\
+\end{GFT}
+
+The theory resulting from that datatype definition is as follows:
+
+\begin{GFT}{hol4}
+\+Theory: cl\\
+\+\\
+\+Parents:\\
+\+    list\\
+\+\\
+\+Type constants:\\
+\+    CT 0\\
+\+\\
+\+Term constants:\\
+\+    \#    :CT -> CT -> CT\\
+\+    C    :num -> CT\\
+\+    CT\_case    :(num -> α) -> (CT -> CT -> α) -> CT -> α\\
+\+    CT\_size    :CT -> num\\
+\+\\
+\+Definitions:\\
+\+    CT\_TY\_DEF\\
+\+    |- ∃rep.\\
+\+         TYPE\_DEFINITION\\
+\+           (λa0'.\\
+\+              ∀'CT' .\\
+\+                (∀a0'.\\
+\+                   (∃a.\\
+\+                      a0' =\\
+\+                      (λa. ind\_type\$CONSTR 0 a (λn. ind\_type\$BOTTOM))\\
+\+                        a) ∨\\
+\+                   (∃a0 a1.\\
+\+                      (a0' =\\
+\+                       (λa0 a1.\\
+\+                          ind\_type\$CONSTR (SUC 0) ARB\\
+\+                            (ind\_type\$FCONS a0\\
+\+                               (ind\_type\$FCONS a1\\
+\+                                  (λn. ind\_type\$BOTTOM)))) a0 a1) ∧\\
+\+                      'CT' a0 ∧ 'CT' a1) ⇒\\
+\+                   'CT' a0') ⇒\\
+\+                'CT' a0') rep\\
+\+    CT\_case\_def\\
+\+    |- (∀f f1 a. CT\_case f f1 (C a) = f a) ∧\\
+\+       ∀f f1 a0 a1. CT\_case f f1 (\# a0 a1) = f1 a0 a1\\
+\+    CT\_size\_def\\
+\+    |- (∀a. CT\_size (C a) = 1 + a) ∧\\
+\+       ∀a0 a1. CT\_size (\# a0 a1) = 1 + (CT\_size a0 + CT\_size a1)\\
+\+\\
+\+Theorems:\\
+\+    datatype\_CT  |- DATATYPE (CT C \#)\\
+\+    CT\_11\\
+\+    |- (∀a a'. (C a = C a') ⇔ (a = a')) ∧\\
+\+       ∀a0 a1 a0' a1'. (\# a0 a1 = \# a0' a1') ⇔ (a0 = a0') ∧ (a1 = a1')\\
+\+    CT\_distinct  |- ∀a1 a0 a. C a ≠ \# a0 a1\\
+\+    CT\_case\_cong\\
+\+    |- ∀M M' f f1.\\
+\+         (M = M') ∧ (∀a. (M' = C a) ⇒ (f a = f' a)) ∧\\
+\+         (∀a0 a1. (M' = \# a0 a1) ⇒ (f1 a0 a1 = f1' a0 a1)) ⇒\\
+\+         (CT\_case f f1 M = CT\_case f' f1' M')\\
+\+    CT\_nchotomy  |- ∀CC. (∃n. CC = C n) ∨ ∃C C0. CC = \# C C0\\
+\+    CT\_Axiom\\
+\+    |- ∀f0 f1.\\
+\+         ∃fn.\\
+\+           (∀a. fn (C a) = f0 a) ∧\\
+\+           ∀a0 a1. fn (\# a0 a1) = f1 a0 a1 (fn a0) (fn a1)\\
+\+    CT\_induction\\
+\+    |- ∀P. (∀n. P (C n)) ∧ (∀C C0. P C ∧ P C0 ⇒ P (\# C C0)) ⇒ ∀C. P C\\
+\end{GFT}
+
+In this section I aim to replicate this quite closely, though using a different representation.
+I am assuming that once this is done here, there will be no further need to refer to the representing type.
+
+\subsection{Introducing the type CT}
+
+The natural way to hand crank such a datatype in ProofPower HOL would be to use the theory of trees in Arthan's mathematical examples as a representation type.
+However, I am more familiar with using the domain of an axiomatic set theory so it will be slightly easier for me to do that.
+
+I don't define the constructors over the representation type since they are simple enough to write out, instead I go straight to defining the closure conditions on the set of representatives.
+
+There are two constructors, a constant constructor and an application constructor.
+There are countably many constants named by natural numbers, and tagged by zero to distinguish them from applications.
+An application is constructed from two combinators and is tagged by 1.
+
+The closure condition is:
+
+\begin{HOLConst}
+\+\PrNM{} \PrNL{}CTrepClosed\PrNN{}: (ONE GSU → BOOL) → BOOL\\
+\PrPH{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}
+\+\PrNM{} ∀ s⦁ CTrepClosed s ⇔ (∀n⦁ s (Nat\PrIJ{u} 0 ↦\PrIJ{u} Nat\PrIJ{u} n))\\
+\+\PrNM{}	∧ (∀f a⦁ s f ∧ s a ⇒ s (Nat\PrIJ{u} 1 ↦\PrIJ{u} (f ↦\PrIJ{u} a)))\\
+\end{HOLConst}
+
+The property of being a combinatory term is then the smallest property which is \emph{CTrepClosed}.
+
+\begin{HOLConst}
+\+\PrNM{} \PrNL{}CTsyntax\PrNN{} : ONE GSU → BOOL\\
+\PrPH{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}
+\+\PrNM{} ∀s⦁ CTsyntax s = ∀t ⦁ CTrepClosed t ⇒ t s\\
+\end{HOLConst}
+
+The following theorems about the representation are helpful in proving related result for the new type:
+
+\begin{GFT}{}
+\+\PrNL{}CTrepclosed\_CTsyntax\_lemma1\PrNN{} =\\
+\+	⊢ CTrepClosed CTsyntax\\
+\+\\
+\+\PrNL{}CTrepclosed\_CTsyntax\_thm\PrNN{} =\\
+\+	⊢ (∀n⦁ CTsyntax (Nat\PrIJ{u} 0 ↦\PrIJ{u} Nat\PrIJ{u} n))\\
+\+       ∧ (∀f a⦁ CTsyntax f ∧ CTsyntax a ⇒ CTsyntax (Nat\PrIJ{u} 1 ↦\PrIJ{u} f ↦\PrIJ{u} a))\\
+\end{GFT}
+\begin{GFT}{}
+\+\PrNL{}CTrepclosed\_CTsyntax\_lemma2\PrNN{} =\\
+\+	⊢ ∀s⦁ CTrepClosed s ⇒ (∀ t⦁ CTsyntax t ⇒ s t)\\
+\end{GFT}
+
+\ignore{
+\begin{GFT}{SML}
+\+val CTrepClosed\_def = get\_spec \PrKM{}CTrepClosed\PrKO{};\\
+\+val CTsyntax\_def = get\_spec \PrKM{}CTsyntax\PrKO{};\\
+\+\\
+\+set\_goal([], \PrKM{}CTrepClosed CTsyntax\PrKO{});\\
+\+val \_ = a (rewrite\_tac [CTsyntax\_def, CTrepClosed\_def]\\
+\+	THEN REPEAT strip\_tac\\
+\+	THEN REPEAT\_N 3 (asm\_ufc\_tac[])\\
+\+	THEN asm\_rewrite\_tac[]);\\
+\+val CTrepclosed\_CTsyntax\_lemma1 = save\_pop\_thm "CTrepclosed\_CTsyntax\_lemma1";\\
+\+\\
+\+val CTrepclosed\_CTsyntax\_thm = save\_thm ("CTrepclosed\_CTsyntax\_thm",\\
+\+	pure\_rewrite\_rule [get\_spec \PrKM{}CTrepClosed\PrKO{}] CTrepclosed\_CTsyntax\_lemma1);\\
+\+\\
+\+local val \_ = set\_goal([], \PrKM{}∀ s⦁ CTrepClosed s ⇒ ∀t⦁ CTsyntax t ⇒ s t\PrKO{});\\
+\+val \_ = a (rewrite\_tac [CTsyntax\_def]\\
+\+	THEN prove\_tac[]);\\
+\+in val CTrepclosed\_CTsyntax\_lemma2 = save\_pop\_thm "CTrepclosed\_CTsyntax\_lemma2";\\
+\+end;\\
+\end{GFT}
+}%ignore
+
+\begin{GFT}{}
+\+\PrNL{}CTsyntax\_cases\_thm\PrNN{} =\\
+\+	⊢ ∀c⦁ CTsyntax c\\
+\+		⇒ (∃ n⦁ c = Nat\PrIJ{u} 0 ↦\PrIJ{u} Nat\PrIJ{u} n)\\
+\+		∨ (∃ f a⦁ CTsyntax f ∧ CTsyntax a ∧ c = Nat\PrIJ{u} 1 ↦\PrIJ{u} f ↦\PrIJ{u} a)\\
+\end{GFT}
+
+\ignore{
+\begin{GFT}{SML}
+\+set\_goal([], \PrKM{}∀c⦁ CTsyntax c ⇒\\
+\+		(∃n⦁ c = Nat\PrIJ{u} 0 ↦\PrIJ{u} Nat\PrIJ{u} n)\\
+\+	∨	(∃f a⦁ CTsyntax f ∧ CTsyntax a ∧ c = (Nat\PrIJ{u} 1 ↦\PrIJ{u} f ↦\PrIJ{u} a))\PrKO{});\\
+\+a (lemma\_tac \PrKM{}CTrepClosed (λc⦁ (∃n⦁ c = Nat\PrIJ{u} 0 ↦\PrIJ{u} Nat\PrIJ{u} n)\\
+\+	∨	(∃f a⦁ CTsyntax f ∧ CTsyntax a ∧ c = (Nat\PrIJ{u} 1 ↦\PrIJ{u} f ↦\PrIJ{u} a)))\PrKO{}\\
+\+	THEN1 (rewrite\_tac[CTrepClosed\_def]\\
+\+		THEN REPEAT strip\_tac));\\
+\+(* *** Goal "1" *** *)\\
+\+a (prove\_∃\_tac);\\
+\+(* *** Goal "2" *** *)\\
+\+a (asm\_prove\_∃\_tac THEN asm\_rewrite\_tac[CTrepclosed\_CTsyntax\_thm]);\\
+\+(* *** Goal "3" *** *)\\
+\+a (asm\_prove\_∃\_tac\\
+\+	THEN asm\_rewrite\_tac[]\\
+\+	THEN ALL\_FC\_T rewrite\_tac [CTrepclosed\_CTsyntax\_thm]\\
+\+	THEN rewrite\_tac[CTrepclosed\_CTsyntax\_thm]);\\
+\+(* *** Goal "4" *** *)\\
+\+a (asm\_prove\_∃\_tac\\
+\+	THEN asm\_rewrite\_tac[]\\
+\+	THEN ALL\_FC\_T rewrite\_tac [CTrepclosed\_CTsyntax\_thm]\\
+\+	THEN rewrite\_tac[CTrepclosed\_CTsyntax\_thm]);\\
+\+(* *** Goal "5" *** *)\\
+\+a (asm\_prove\_∃\_tac\\
+\+	THEN asm\_rewrite\_tac[]\\
+\+	THEN ALL\_FC\_T rewrite\_tac [CTrepclosed\_CTsyntax\_thm]\\
+\+	THEN rewrite\_tac[CTrepclosed\_CTsyntax\_thm]);\\
+\+(* *** Goal "6" *** *)\\
+\+a (REPEAT\_N 2 strip\_tac);\\
+\+a (fc\_tac [CTsyntax\_def]);\\
+\+a (all\_asm\_fc\_tac[]);\\
+\+a (POP\_ASM\_T ante\_tac THEN rewrite\_tac[]);\\
+\+val CTsyntax\_cases\_thm = save\_pop\_thm "CTsyntax\_cases\_thm";\\
+\+\\
+\+set\_goal([], \PrKM{}∃c⦁ CTsyntax c\PrKO{});\\
+\+a (∃\_tac \PrKM{}Nat\PrIJ{u} 0 ↦\PrIJ{u} Nat\PrIJ{u} 0\PrKO{}\\
+\+	THEN rewrite\_tac [CTsyntax\_def, CTrepClosed\_def]\\
+\+	THEN REPEAT strip\_tac\\
+\+	THEN asm\_rewrite\_tac[]);\\
+\+val CTsyntax\_nonempty = pop\_thm();\\
+\end{GFT}
+}%ignore
+
+To introduce the new type we must prove that \emph{CTsyntax} is inhabited: 
+
+\begin{GFT}{}
+\+\PrNL{}CTsyntax\_nonempty\PrNN{} = \\
+\+	⊢ ∃c⦁ CTsyntax c\\
+\end{GFT}
+
+The type \emph{CT} is then introduced as follows:
+
+\begin{GFT}{SML}
+\+val CT\_type\_defn\_thm = new\_type\_defn(["CT"], "CT", [], CTsyntax\_nonempty);\\
+\end{GFT}
+
+Which gives the following result:
+\begin{GFT}{}
+\+\PrNL{}CT\_type\_defn\_thm\PrNN{} = ⊢ ∃ f⦁ TypeDefn CTsyntax f\\
+\end{GFT}
+
+From which we can derive:
+
+\begin{GFT}{}
+\+\PrNL{}CT\_type\_lemma2\PrNN{} =\\
+\+	⊢ ∃ abs rep⦁ (∀ a⦁ abs (rep a) = a)\\
+\+         ∧ (∀ r⦁ CTsyntax r ⇔ rep (abs r) = r)\\
+\+         ∧ OneOne rep\\
+\+         ∧ (∀ a⦁ CTsyntax (rep a))\\
+\end{GFT}
+
+\ignore{
+\begin{GFT}{SML}
+\+val [CT\_type\_lemma2] = fc\_rule [type\_defn\_lemma4] [CT\_type\_defn\_thm];\\
+\end{GFT}
+}%ignore
+
+\subsection{Primitive Constructors over CT}
+
+I could manage without defining the following mappings between the new type and its representations , but its easier to define them.
+
+\ignore{
+\begin{GFT}{SML}
+\+set\_goal([], \PrKM{}∃(CTabs:ONE GSU → CT) (CTrep:CT → ONE GSU)⦁\\
+\+	(∀ a⦁ CTabs (CTrep a) = a)\\
+\+     ∧ (∀ r⦁ CTsyntax r ⇔ CTrep (CTabs r) = r)\\
+\+     ∧ OneOne CTrep\\
+\+     ∧ (∀ a⦁ CTsyntax (CTrep a))\PrKO{});\\
+\+a (strip\_asm\_tac CT\_type\_lemma2);\\
+\+a (∃\_tac \PrKM{}abs\PrKO{} THEN ∃\_tac \PrKM{}rep\PrKO{} THEN asm\_rewrite\_tac[]);\\
+\+save\_cs\_∃\_thm(pop\_thm());\\
+\end{GFT}
+}%ignore
+
+\begin{HOLConst}
+\+\PrNM{} \PrNL{}CTabs\PrNN{}: ONE GSU → CT;\\
+\+\PrNM{} \PrNL{}CTrep\PrNN{}: CT → ONE GSU\\
+\PrPH{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}
+\+\PrNM{}	(∀ a⦁ CTabs (CTrep a) = a)\\
+\+\PrNM{}     ∧ (∀ r⦁ CTsyntax r ⇔ CTrep (CTabs r) = r)\\
+\+\PrNM{}     ∧ OneOne CTrep\\
+\+\PrNM{}     ∧ (∀ a⦁ CTsyntax (CTrep a))\\
+\end{HOLConst}
+
+
+There will be two constructors one for constants and one for applications.
+Applications are infix.
+
+\begin{GFT}{SML}
+\+declare\_infix(1000, "\PrIJ{c}");\\
+\end{GFT}
+
+\begin{HOLConst}
+\+\PrNM{} \PrNL{}\$\PrIJ{c}\PrNN{}: CT → CT → CT\\
+\PrPH{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}
+\+\PrNM{} ∀s t⦁ s \PrIJ{c} t = CTabs (Nat\PrIJ{u} 1 ↦\PrIJ{u} (CTrep s) ↦\PrIJ{u} (CTrep t))\\
+\end{HOLConst}
+
+\begin{HOLConst}
+\+\PrNM{} \PrNL{}C\PrNN{}: ℕ → CT\\
+\PrPH{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}
+\+\PrNM{} ∀s⦁ C s = CTabs(Nat\PrIJ{u} 0 ↦\PrIJ{u} (Nat\PrIJ{u} s))\\
+\end{HOLConst}
+
+\begin{GFT}{}
+\+\PrNL{}CT\_cases\PrNN{} =\\
+\+	⊢ ∀ t⦁ (∃ n⦁ t = C n) ∨ (∃ c1 c2⦁ t = c1 \PrIJ{c} c2)\\
+\end{GFT}
+
+\ignore{
+\begin{GFT}{SML}
+\+val CTrep\_def = get\_spec \PrKM{}CTrep\PrKO{};\\
+\+val \PrIJ{c}\_def = get\_spec \PrKM{}\$\PrIJ{c}\PrKO{};\\
+\+val C\_def = get\_spec \PrKM{}C\PrKO{};\\
+\+\\
+\+set\_goal([], \PrKM{}∀t⦁ (∃n⦁ t = C n) ∨ (∃c1 c2⦁ t = c1 \PrIJ{c} c2)\PrKO{});\\
+\+a (strip\_tac);\\
+\+a (strip\_asm\_tac (∀\_elim \PrKM{}CTrep t\PrKO{} CTsyntax\_cases\_thm));\\
+\+(* *** Goal "1" *** *)\\
+\+a (POP\_ASM\_T ante\_tac THEN rewrite\_tac [CTrep\_def]);\\
+\+(* *** Goal "2" *** *)\\
+\+a (∨\_left\_tac THEN ∃\_tac \PrKM{}n\PrKO{} THEN asm\_rewrite\_tac[C\_def]);\\
+\+a (LEMMA\_T \PrKM{}CTabs(Nat\PrIJ{u} 0 ↦\PrIJ{u} Nat\PrIJ{u} n) = CTabs(CTrep t)\PrKO{} rewrite\_thm\_tac\\
+\+	THEN1 asm\_rewrite\_tac[]);\\
+\+a (rewrite\_tac[CTrep\_def]);\\
+\+(* *** Goal "3" *** *)\\
+\+a (∨\_right\_tac THEN ∃\_tac \PrKM{}CTabs f\PrKO{} THEN ∃\_tac \PrKM{}CTabs a\PrKO{}\\
+\+	THEN asm\_rewrite\_tac[\PrIJ{c}\_def]);\\
+\+a (LEMMA\_T \PrKM{}CTabs(Nat\PrIJ{u} 1 ↦\PrIJ{u} CTrep (CTabs f) ↦\PrIJ{u} CTrep (CTabs a)) = CTabs(CTrep t)\PrKO{} rewrite\_thm\_tac\\
+\+	THEN1 asm\_rewrite\_tac[]);\\
+\+a (FC\_T rewrite\_tac [CTrep\_def]);\\
+\+(* *** Goal "3.2" *** *)\\
+\+a (rewrite\_tac [CTrep\_def]);\\
+\+val CT\_cases = save\_pop\_thm "CT\_cases";\\
+\end{GFT}
+}%ignore
+
+\subsection{Induction and Recursion}
+
+Now we obtain a principle of induction for reasoning about these combinatory terms and a recursion theorem to justify definitions over the terms by pattern matching recursion.
+
+We can derive a well-founded ordering for combinatory terms from the well-foundedness of membership over the sets used to represent the terms.
+This provides a first method of proof by induction over the combinatory terms which is used to prove the induction principle produced by hol4.
+
+\begin{GFT}{}
+\+\PrNL{}wf\_CT\_thm\PrNN{} =\\
+\+	⊢ well\_founded (λ x y⦁ CTrep x ∈\PrIJ{u} CTrep y)\\
+\+\PrNL{}tc∈\PrIJ{u}\_rep\_\PrIJ{c}\_lemma\PrNN{} =\\
+\+	⊢ ∀ c1 c2⦁ CTrep c1 ∈\PrIJ{u}\PrJL{+} CTrep (c1 \PrIJ{c} c2)\\
+\+		∧ CTrep c2 ∈\PrIJ{u}\PrJL{+} CTrep (c1 \PrIJ{c} c2)\\
+\+\PrNL{}CT\_induction\PrNN{} =\\
+\+	⊢ ∀ P⦁ (∀ n⦁ P (C n)) ∧ (∀ c c0⦁ P c ∧ P c0 ⇒ P (c \PrIJ{c} c0))\\
+\+		⇒ (∀ c⦁ P c)\\
+\+\PrNL{}CT\_axiom\PrNN{} =\\
+\+	⊢ ∀ f0 f1⦁ ∃ fn⦁\\
+\+		(∀ a⦁ fn (C a) = f0 a)\\
+\+           ∧	(∀ a0 a1⦁ fn (a0 \PrIJ{c} a1) = f1 a0 a1 (fn a0) (fn a1))\\
+\end{GFT}
+
+\ignore{
+\begin{GFT}{SML}
+\+set\_goal([], \PrKM{}well\_founded(DerivedOrder CTrep (\$∈\PrIJ{u}\PrJL{+}:ONE GSU → ONE GSU → BOOL))\PrKO{});\\
+\+a (rewrite\_tac [∀\_elim \PrKM{}CTrep\PrKO{} (⇒\_elim (∀\_elim \PrKM{}\$∈\PrIJ{u}\PrJL{+}:ONE GSU → ONE GSU → BOOL\PrKO{} wf\_derived\_order\_thm) (inst\_type\_rule [(\PrJE{}ONE\PrKO{}, \PrJE{}'a\PrKO{})] gsu\_wftc\_thm2))]);\\
+\+val wf\_CT\_lemma = pop\_thm ();\\
+\+\\
+\+val wf\_CT\_thm = save\_thm ("wf\_CT\_thm", rewrite\_rule [get\_spec \PrKM{}DerivedOrder\PrKO{}] wf\_CT\_lemma);\\
+\+\\
+\+set\_goal([], \PrKM{}∀c1 c2⦁ CTrep c1 ∈\PrIJ{u}\PrJL{+} CTrep (c1 \PrIJ{c} c2)\\
+\+		∧ CTrep c2 ∈\PrIJ{u}\PrJL{+} CTrep (c1 \PrIJ{c} c2)\PrKO{});\\
+\+a (REPEAT ∀\_tac THEN rewrite\_tac[\PrIJ{c}\_def]);\\
+\+a (lemma\_tac \PrKM{}CTsyntax (Nat\PrIJ{u} 1 ↦\PrIJ{u} CTrep c1 ↦\PrIJ{u} CTrep c2)\PrKO{} \\
+\+	THEN1 (bc\_tac [∧\_right\_elim CTrepclosed\_CTsyntax\_thm]\\
+\+		THEN rewrite\_tac [CTrep\_def]));\\
+\+a (lemma\_tac \PrKM{}CTrep c1 ↦\PrIJ{u} CTrep c2 ∈\PrIJ{u}\PrJL{+} Nat\PrIJ{u} 1 ↦\PrIJ{u} CTrep c1 ↦\PrIJ{u} CTrep c2\PrKO{}\\
+\+	THEN1 rewrite\_tac[]);\\
+\+a (lemma\_tac \PrKM{}CTrep c1 ∈\PrIJ{u}\PrJL{+} CTrep c1 ↦\PrIJ{u} CTrep c2 ∧ CTrep c2 ∈\PrIJ{u}\PrJL{+} CTrep c1 ↦\PrIJ{u} CTrep c2\PrKO{}\\
+\+	THEN1 rewrite\_tac[]);\\
+\+a (all\_asm\_fc\_tac [tc∈\PrIJ{u}\_trans\_thm]);\\
+\+a (ALL\_FC\_T asm\_rewrite\_tac[CTrep\_def]);\\
+\+val tc∈\PrIJ{u}\_rep\_\PrIJ{c}\_lemma = save\_pop\_thm "tc∈\PrIJ{u}\_rep\_\PrIJ{c}\_lemma";\\
+\+\\
+\+set\_goal([], \PrKM{}∀P⦁ (∀n⦁ P (C n)) ∧ (∀c c0⦁ P c ∧ P c0 ⇒ P (c \PrIJ{c} c0)) ⇒ ∀c⦁ P c\PrKO{});\\
+\+a (REPEAT strip\_tac);\\
+\+a (wf\_induction\_tac wf\_CT\_thm \PrKM{}c\PrKO{});\\
+\+a (strip\_asm\_tac (∀\_elim \PrKM{}t\PrKO{} CT\_cases)\\
+\+	THEN asm\_rewrite\_tac[]);\\
+\+a (var\_elim\_asm\_tac \PrKM{}t = c1 \PrIJ{c} c2\PrKO{});\\
+\+a (POP\_ASM\_T (asm\_tac o (rewrite\_rule[])));\\
+\+a (lemma\_tac \PrKM{}CTrep c1 ∈\PrIJ{u}\PrJL{+} CTrep (c1 \PrIJ{c} c2) ∧ CTrep c2 ∈\PrIJ{u}\PrJL{+} CTrep (c1 \PrIJ{c} c2)\PrKO{}\\
+\+	THEN1 rewrite\_tac [tc∈\PrIJ{u}\_rep\_\PrIJ{c}\_lemma]);\\
+\+a (all\_asm\_fc\_tac[]);\\
+\+a (all\_asm\_fc\_tac[]);\\
+\+val CT\_induction = save\_pop\_thm "CT\_induction";\\
+\+\\
+\+set\_goal([], \PrKM{}∀f0 f1⦁ ∃fn:ONE GSU → 'a⦁\\
+\+	(∀n⦁ fn (Nat\PrIJ{u} 0 ↦\PrIJ{u} Nat\PrIJ{u} n:ONE GSU) = f0 (Nat\PrIJ{u} n:ONE GSU))\\
+\+	∧ (∀a0 a1⦁ fn (Nat\PrIJ{u} 1 ↦\PrIJ{u} (a0 ↦\PrIJ{u} a1)) = f1 a0 a1 (fn a0) (fn a1))\PrKO{});\\
+\+a (REPEAT strip\_tac);\\
+\+a (lemma\_tac \PrKM{}∃g⦁ g = λfn (x:ONE GSU)⦁\\
+\+  if (∃n⦁ x = (Nat\PrIJ{u} 0 ↦\PrIJ{u} (Nat\PrIJ{u} n:ONE GSU))) ∨ ∃a0 a1⦁ x = (Nat\PrIJ{u} 1 ↦\PrIJ{u} a0 ↦\PrIJ{u} a1)\\
+\+  then\\
+\+	if Fst\PrIJ{u} x = Nat\PrIJ{u} 0\\
+\+	then f0 (Snd\PrIJ{u} x)\\
+\+	else	let a0 = Fst\PrIJ{u} (Snd\PrIJ{u} x)\\
+\+		and a1 = Snd\PrIJ{u} (Snd\PrIJ{u} x)\\
+\+		in f1 a0 a1 (fn a0) (fn a1)\\
+\+  else εx⦁ T\PrKO{}\\
+\+	THEN1 prove\_∃\_tac);\\
+\+a (lemma\_tac \PrKM{}g respects \$∈\PrIJ{u}\PrKO{}\\
+\+	THEN1 (rewrite\_tac [get\_spec \PrKM{}\$respects\PrKO{}]\\
+\+		THEN REPEAT strip\_tac\\
+\+		THEN asm\_rewrite\_tac[]));\\
+\+(* *** Goal "1" *** *)\\
+\+a (cond\_cases\_tac \PrKM{}Fst\PrIJ{u} x = Nat\PrIJ{u} 0\PrKO{});\\
+\+a (CASES\_T \PrKM{}(∃n⦁ x = (Nat\PrIJ{u} 0 ↦\PrIJ{u} (Nat\PrIJ{u} n:ONE GSU))) ∨ ∃a0 a1⦁ x = (Nat\PrIJ{u} 1 ↦\PrIJ{u} a0 ↦\PrIJ{u} a1)\PrKO{}\\
+\+	(fn x => rewrite\_thm\_tac x THEN asm\_tac x));\\
+\+a (POP\_ASM\_T strip\_asm\_tac);\\
+\+(* *** Goal "1.1" *** *)\\
+\+a (var\_elim\_asm\_tac \PrKM{}x = Nat\PrIJ{u} 0 ↦\PrIJ{u} Nat\PrIJ{u} n\PrKO{});\\
+\+a (POP\_ASM\_T (strip\_asm\_tac o (rewrite\_rule[])));\\
+\+(* *** Goal "1.2" *** *)\\
+\+a (lemma\_tac \PrKM{}tc \$∈\PrIJ{u} a0 x ∧ tc \$∈\PrIJ{u} a1 x\PrKO{}\\
+\+	THEN1 asm\_rewrite\_tac[]);\\
+\+(* *** Goal "1.2.1" *** *)\\
+\+a (lemma\_tac \PrKM{}a0 ∈\PrIJ{u}\PrJL{+} (a0 ↦\PrIJ{u} a1)\PrKO{} THEN1 asm\_rewrite\_tac[tc∈\PrIJ{u}\_↦\PrIJ{u}\_left\_thm]);\\
+\+a (lemma\_tac \PrKM{}(a0 ↦\PrIJ{u} a1) ∈\PrIJ{u}\PrJL{+} (Nat\PrIJ{u} 1 ↦\PrIJ{u} (a0 ↦\PrIJ{u} a1))\PrKO{}\\
+\+	THEN1 asm\_rewrite\_tac[tc∈\PrIJ{u}\_↦\PrIJ{u}\_right\_thm]);\\
+\+a (LEMMA\_T \PrKM{}a0 ∈\PrIJ{u}\PrJL{+} (Nat\PrIJ{u} 1 ↦\PrIJ{u} a0 ↦\PrIJ{u} a1)\PrKO{}\\
+\+	(asm\_tac o (rewrite\_rule[get\_spec \PrKM{}\$∈\PrIJ{u}\PrJL{+}\PrKO{}]))\\
+\+	THEN1 all\_fc\_tac [tc∈\PrIJ{u}\_trans\_thm]);\\
+\+a (asm\_rewrite\_tac[]);\\
+\+a (lemma\_tac \PrKM{}a1 ∈\PrIJ{u}\PrJL{+} (a0 ↦\PrIJ{u} a1)\PrKO{} THEN1 asm\_rewrite\_tac[tc∈\PrIJ{u}\_↦\PrIJ{u}\_left\_thm]);\\
+\+a (LEMMA\_T \PrKM{}a1 ∈\PrIJ{u}\PrJL{+} (Nat\PrIJ{u} 1 ↦\PrIJ{u} a0 ↦\PrIJ{u} a1)\PrKO{}\\
+\+	(rewrite\_thm\_tac o (rewrite\_rule[get\_spec \PrKM{}\$∈\PrIJ{u}\PrJL{+}\PrKO{}]))\\
+\+	THEN1 all\_fc\_tac [tc∈\PrIJ{u}\_trans\_thm]);\\
+\+(* *** Goal "1.2.2" *** *)\\
+\+a (all\_asm\_fc\_tac []);\\
+\+a (REPEAT\_N 2 (POP\_ASM\_T ante\_tac) THEN asm\_rewrite\_tac[let\_def]);\\
+\+a (REPEAT strip\_tac THEN asm\_rewrite\_tac[]);\\
+\+(* *** Goal "2" *** *)\\
+\+a (strip\_asm\_tac (inst\_type\_rule [(\PrJE{}ONE\PrKO{}, \PrJE{}'a\PrKO{})] gsu\_wf\_thm1));\\
+\+a (all\_fc\_tac [fixp\_thm1]);\\
+\+a (∃\_tac \PrKM{}g'\PrKO{});\\
+\+a (POP\_ASM\_T ante\_tac\\
+\+	THEN once\_asm\_rewrite\_tac[]\\
+\+	THEN rewrite\_tac[]\\
+\+	THEN strip\_tac);\\
+\+a (strip\_tac THEN REPEAT ∀\_tac);\\
+\+(* *** Goal "2.1" *** *)\\
+\+a (SPEC\_NTH\_ASM\_T 1 \PrKM{}Nat\PrIJ{u} 0 ↦\PrIJ{u} (Nat\PrIJ{u} n):ONE GSU\PrKO{} ante\_tac);\\
+\+a (LEMMA\_T \PrKM{}∃ n'⦁ Nat\PrIJ{u} 0 ↦\PrIJ{u} Nat\PrIJ{u} n = Nat\PrIJ{u} 0 ↦\PrIJ{u} Nat\PrIJ{u} n'\PrKO{} rewrite\_thm\_tac\\
+\+	THEN1 (∃\_tac \PrKM{}n\PrKO{} THEN rewrite\_tac[]));\\
+\+a (LEMMA\_T \PrKM{}∃ n'⦁ n = n'\PrKO{} rewrite\_thm\_tac\\
+\+	THEN1 (∃\_tac \PrKM{}n\PrKO{} THEN rewrite\_tac[]));\\
+\+a (STRIP\_T (rewrite\_thm\_tac o (eq\_sym\_rule)));\\
+\+(* *** Goal "2.2" *** *)\\
+\+a (SPEC\_NTH\_ASM\_T 1 \PrKM{}Nat\PrIJ{u} 1 ↦\PrIJ{u} a0 ↦\PrIJ{u} a1:ONE GSU\PrKO{} ante\_tac);\\
+\+a (LEMMA\_T \PrKM{}∃ a0' a1'⦁ Nat\PrIJ{u} 1 ↦\PrIJ{u} a0 ↦\PrIJ{u} a1 = Nat\PrIJ{u} 1 ↦\PrIJ{u} a0' ↦\PrIJ{u} a1'\PrKO{} rewrite\_thm\_tac\\
+\+	THEN1 (∃\_tac \PrKM{}a0\PrKO{} THEN ∃\_tac \PrKM{}a1\PrKO{} THEN rewrite\_tac[]));\\
+\+a (rewrite\_tac[let\_def]);\\
+\+a (STRIP\_T (rewrite\_thm\_tac o (eq\_sym\_rule)));\\
+\+val rec\_lemma1 = pop\_thm ();\\
+\+\\
+\+set\_goal([], \PrKM{}∀f0 f1⦁\\
+\+         ∃fn: CT → 'a⦁\\
+\+           (∀a⦁ fn (C a) = f0 a) ∧\\
+\+           ∀a0 a1:CT⦁ (fn (a0 \PrIJ{c} a1):'a) = (f1 a0 a1 (fn a0) (fn a1))\PrKO{});\\
+\+a (REPEAT strip\_tac);\\
+\+a (strip\_asm\_tac (list\_∀\_elim\\
+\+	[\PrKM{}λc:ONE GSU⦁ f0 (εn⦁ Nat\PrIJ{u} n = c)\PrKO{},\\
+\+	\PrKM{}λa0 a1 fa0 fa1⦁ f1 (CTabs a0) (CTabs a1) fa0 fa1\PrKO{}]\\
+\+ rec\_lemma1));\\
+\+a (∃\_tac \PrKM{}λc⦁ fn (CTrep c)\PrKO{}\\
+\+	THEN REPEAT strip\_tac THEN\_TRY asm\_rewrite\_tac[CTrep\_def, C\_def, \PrIJ{c}\_def]);\\
+\+(* *** Goal "1" *** *)\\
+\+a (lemma\_tac \PrKM{}CTsyntax (Nat\PrIJ{u} 0 ↦\PrIJ{u} Nat\PrIJ{u} a)\PrKO{}\\
+\+	THEN1 rewrite\_tac[CTrepclosed\_CTsyntax\_thm]);\\
+\+a (FC\_T asm\_rewrite\_tac [CTrep\_def]);\\
+\+a (ε\_tac \PrKM{}ε n⦁ n = a\PrKO{} THEN1 prove\_∃\_tac);\\
+\+a (asm\_rewrite\_tac[]);\\
+\+(* *** Goal "2" *** *)\\
+\+a (lemma\_tac \PrKM{}CTsyntax(CTrep a0) ∧ CTsyntax(CTrep a1)\PrKO{}\\
+\+	THEN1 rewrite\_tac [CTrep\_def]);\\
+\+a (lemma\_tac \PrKM{}CTsyntax(Nat\PrIJ{u} 1 ↦\PrIJ{u} CTrep a0 ↦\PrIJ{u} CTrep a1)\PrKO{}\\
+\+	THEN1 all\_fc\_tac [CTrepclosed\_CTsyntax\_thm]);\\
+\+a (ALL\_FC\_T asm\_rewrite\_tac [CTrep\_def]);\\
+\+a (rewrite\_tac[CTrep\_def]);\\
+\+val CT\_axiom = save\_pop\_thm "CT\_axiom";\\
+\+\\
+\+add\_∃\_cd\_thms [CT\_axiom] "'icl";\\
+\+set\_merge\_pcs ["misc31", "'icl"];\\
+\end{GFT}
+}%ignore
+
+\subsection{Further Definitions}
+
+We can now define constants over $CT$ by pattern matching primitive recursion.
+
+I would normally obtain a `course of values' induction by defining a well-founded relation over the terms, which is easily done thus:
+
+\begin{GFT}{SML}
+\+declare\_infix(200, "in\PrIJ{c}");\\
+\end{GFT}
+
+\begin{HOLConst}
+\+\PrNM{} \$\PrNL{}in\PrIJ{c}\PrNN{}: CT → CT → BOOL\\
+\PrPH{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}
+\+\PrNM{} ∀x y⦁ x in\PrIJ{c} y ⇔ ∃z⦁ y = x \PrIJ{c} z ∨ y = z \PrIJ{c} x\\
+\end{HOLConst}
+
+
+\begin{GFT}{}
+\end{GFT}
+
+\ignore{
+\begin{GFT}{SML}
+\+val in\PrIJ{c}\_def = get\_spec \PrKM{}\$in\PrIJ{c}\PrKO{};\\
+\+\\
+\end{GFT}
+}%ignore
+
+However, the method used in the hol4 datatype system is to define a numeric `size' for combinatory terms as follows:
+
+\begin{HOLConst}
+\+\PrNM{} \PrNL{}CT\_size\PrNN{}: CT → ℕ\\
+\PrPH{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}
+\+\PrNM{}	(∀a⦁		CT\_size (C a)		= 1 + a)\\
+\+\PrNM{} ∧	∀a0 a1⦁	CT\_size (a0 \PrIJ{c} a1)	= 1 + CT\_size a0 + CT\_size a1\\
+\end{HOLConst}
+
+Course of values induction can then be obtained by induction over the size of combinatory terms.
+
+\begin{HOLConst}
+\+\PrNM{} \PrNL{}CT\_case\PrNN{}: (ℕ → CT) → (CT → CT → CT) → (CT → CT)\\
+\PrPH{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}
+\+\PrNM{} ∀f g x y n⦁	CT\_case f g (C n) = f n\\
+\+\PrNM{}		∧	CT\_case f g (x \PrIJ{c} y) = g x y\\
+\end{HOLConst}
+
+\ignore{
+\begin{GFT}{SML}
+\+val CT\_case\_def = get\_spec \PrKM{}CT\_case\PrKO{};\\
+\+\\
+\+set\_goal([], \PrKM{}∃CT\_size2⦁ (∀a⦁	CT\_size2 (C a)	= 1 + a)\\
+\+\PrNM{} ∧	∀a0 a1⦁	CT\_size2 (a0 \PrIJ{c} a1)	= 1 + CT\_size2 a0 + CT\_size2 a1\PrKO{});\\
+\+a (strip\_asm\_tac (list\_∀\_elim\\
+\+	[\PrKM{}λa:ℕ⦁ 1 + a\PrKO{}, \PrKM{}λ(a0:CT) (a1:CT) fa0 fa1⦁ 1 + fa0 + fa1\PrKO{}] CT\_axiom));\\
+\+\\
+\+set\_flag("pp\_show\_HOL\_types", false);\\
+\end{GFT}
+}%ignore
+
+We now prove the rest of the theorems which are derived automatically for the datatype in hol4.
+
+\begin{GFT}{}
+\+\PrNL{}CT\_11\PrNN{} =\\
+\+	⊢ (∀ a a'⦁ C a = C a' ⇒ a = a')\\
+\+	∧ (∀ a0 a1 a0' a1'⦁ a0 \PrIJ{c} a1 = a0' \PrIJ{c} a1' ⇒ a0 = a0' ∧ a1 = a1')\\
+\+\PrNL{}CT\_distinct\PrNN{} =\\
+\+	⊢ ∀ a a0 a1⦁ ¬ C a = a0 \PrIJ{c} a1\\
+\+\PrNL{}CT\_nchotomy\PrNN{} =\\
+\+	⊢ ∀ cc⦁ ¬ ((∃ n⦁ cc = C n) ⇔ (∃ c c0⦁ cc = c \PrIJ{c} c0))\\
+\end{GFT}
+
+
+\ignore{
+\begin{GFT}{SML}
+\+set\_goal([], \PrKM{}\\
+\+	(∀a a'⦁ (C a = C a') ⇒ (a = a')) ∧\\
+\+        (∀a0 a1 a0' a1'⦁ (a0 \PrIJ{c} a1 = a0' \PrIJ{c} a1') ⇒ (a0 = a0') ∧ (a1 = a1'))\\
+\+\PrKO{});\\
+\+a (rewrite\_tac [C\_def, \PrIJ{c}\_def] THEN REPEAT\_N 2 strip\_tac\\
+\+	THEN REPEAT ∀\_tac THEN strip\_tac);\\
+\+(* *** Goal "1" *** *)\\
+\+a (lemma\_tac \PrKM{}CTsyntax(Nat\PrIJ{u} 0 ↦\PrIJ{u} Nat\PrIJ{u} a)\PrKO{} THEN1 rewrite\_tac [CTrepclosed\_CTsyntax\_thm]);\\
+\+a (lemma\_tac \PrKM{}CTsyntax(Nat\PrIJ{u} 0 ↦\PrIJ{u} Nat\PrIJ{u} a')\PrKO{} THEN1 rewrite\_tac [CTrepclosed\_CTsyntax\_thm]);\\
+\+a (LEMMA\_T \PrKM{}CTrep(CTabs (Nat\PrIJ{u} 0 ↦\PrIJ{u} Nat\PrIJ{u} a)) = CTrep(CTabs (Nat\PrIJ{u} 0 ↦\PrIJ{u} Nat\PrIJ{u} a'))\PrKO{} (fn y => ALL\_FC\_T (fn x => (asm\_tac o (rewrite\_rule x)) y) [CTrep\_def])\\
+\+	THEN1 asm\_rewrite\_tac[]);\\
+\+a (strip\_tac);\\
+\+(* *** Goal "2" *** *)\\
+\+a (lemma\_tac \PrKM{}CTsyntax(CTrep a0) ∧ CTsyntax(CTrep a1)\PrKO{}\\
+\+	THEN1 rewrite\_tac [CTrep\_def]);\\
+\+a ((lemma\_tac \PrKM{}CTsyntax (Nat\PrIJ{u} 1 ↦\PrIJ{u} CTrep a0 ↦\PrIJ{u} CTrep a1)\PrKO{}\\
+\+	THEN1 (bc\_tac [∧\_right\_elim CTrepclosed\_CTsyntax\_thm]))\\
+\+		THEN\_TRY ALL\_FC\_T asm\_rewrite\_tac [CTrep\_def]);\\
+\+a (lemma\_tac \PrKM{}CTsyntax(CTrep a0') ∧ CTsyntax(CTrep a1')\PrKO{}\\
+\+	THEN1 rewrite\_tac [CTrep\_def]);\\
+\+a ((lemma\_tac \PrKM{}CTsyntax (Nat\PrIJ{u} 1 ↦\PrIJ{u} CTrep a0' ↦\PrIJ{u} CTrep a1')\PrKO{}\\
+\+	THEN1 (bc\_tac [∧\_right\_elim CTrepclosed\_CTsyntax\_thm]))\\
+\+		THEN\_TRY ALL\_FC\_T asm\_rewrite\_tac [CTrep\_def]);\\
+\+a (LEMMA\_T \PrKM{}CTrep(CTabs (Nat\PrIJ{u} 1 ↦\PrIJ{u} CTrep a0 ↦\PrIJ{u} CTrep a1))\\
+\+             = CTrep(CTabs (Nat\PrIJ{u} 1 ↦\PrIJ{u} CTrep a0' ↦\PrIJ{u} CTrep a1'))\PrKO{}\\
+\+	(fn y => ALL\_FC\_T (fn x => (ante\_tac o (try(rewrite\_rule x))) y) [CTrep\_def])\\
+\+	THEN1 asm\_rewrite\_tac[]);\\
+\+a (strip\_tac THEN LEMMA\_T\\
+\+	\PrKM{}CTabs(CTrep a0) = CTabs(CTrep a0')\\
+\+	∧ CTabs(CTrep a1) = CTabs(CTrep a1')\PrKO{}\\
+\+	(rewrite\_thm\_tac o (rewrite\_rule [CTrep\_def]))\\
+\+	THEN1 asm\_rewrite\_tac[]);\\
+\+val CT\_11 = save\_pop\_thm "CT\_11";\\
+\+\\
+\+set\_goal([], \PrKM{}∀a a0 a1⦁ ¬ C a = a0 \PrIJ{c} a1\PrKO{});\\
+\+a (rewrite\_tac [C\_def, \PrIJ{c}\_def] THEN contr\_tac);\\
+\+a (lemma\_tac \PrKM{}CTsyntax(CTrep a0) ∧ CTsyntax(CTrep a1)\PrKO{}\\
+\+	THEN1 rewrite\_tac [CTrep\_def]);\\
+\+a ((lemma\_tac \PrKM{}CTsyntax (Nat\PrIJ{u} 1 ↦\PrIJ{u} CTrep a0 ↦\PrIJ{u} CTrep a1)\PrKO{}\\
+\+	THEN1 (bc\_tac [∧\_right\_elim CTrepclosed\_CTsyntax\_thm]))\\
+\+		THEN\_TRY ALL\_FC\_T asm\_rewrite\_tac [CTrep\_def]);\\
+\+a (lemma\_tac \PrKM{}CTsyntax(Nat\PrIJ{u} 0 ↦\PrIJ{u} Nat\PrIJ{u} a)\PrKO{}\\
+\+	THEN1 (rewrite\_tac [CTrepclosed\_CTsyntax\_thm]));\\
+\+a (LEMMA\_T \PrKM{}CTrep(CTabs (Nat\PrIJ{u} 0 ↦\PrIJ{u} Nat\PrIJ{u} a))\\
+\+	= CTrep(CTabs (Nat\PrIJ{u} 1 ↦\PrIJ{u} CTrep a0 ↦\PrIJ{u} CTrep a1))\PrKO{}\\
+\+	ante\_tac\\
+\+	THEN1 asm\_rewrite\_tac[]);\\
+\+a (FC\_T rewrite\_tac [CTrep\_def]);\\
+\+val CT\_distinct = save\_pop\_thm "CT\_distinct";\\
+\+\\
+\+set\_goal([], \PrKM{}∀M M' f f1⦁\\
+\+         (M = M') ∧ (∀a⦁ (M' = C a) ⇒ (f a = f' a)) ∧\\
+\+         (∀a0 a1⦁ (M' = a0 \PrIJ{c} a1) ⇒ (f1 a0 a1 = f1' a0 a1)) ⇒\\
+\+         (CT\_case f f1 M = CT\_case f' f1' M')\PrKO{});\\
+\+a (REPEAT ∀\_tac\\
+\+	THEN REPEAT strip\_tac\\
+\+	THEN asm\_rewrite\_tac[]);\\
+\+a (strip\_asm\_tac (∀\_elim \PrKM{}M'\PrKO{} CT\_cases)\\
+\+	THEN asm\_rewrite\_tac[CT\_case\_def]\\
+\+	THEN GET\_NTH\_ASM\_T 1 (var\_elim\_asm\_tac o concl));\\
+\+(* *** Goal "1" *** *)\\
+\+a (spec\_nth\_asm\_tac 2 \PrKM{}n\PrKO{});\\
+\+(* *** Goal "2" *** *)\\
+\+a (var\_elim\_asm\_tac \PrKM{}M = c1 \PrIJ{c} c2\PrKO{});\\
+\+a (list\_spec\_nth\_asm\_tac 1 [\PrKM{}c1\PrKO{}, \PrKM{}c2\PrKO{}]);\\
+\+val CT\_case\_cong = save\_pop\_thm "CT\_case\_cong";\\
+\+\\
+\+set\_goal([], \PrKM{}∀cc⦁ ¬ (∃n⦁ cc = C n) = (∃c c0⦁ cc = c \PrIJ{c} c0)\PrKO{});\\
+\+a (REPEAT ∀\_tac);\\
+\+a (strip\_asm\_tac (∀\_elim \PrKM{}cc\PrKO{} CT\_cases) THEN asm\_rewrite\_tac [CT\_distinct]);\\
+\+(* *** Goal "1" *** *)\\
+\+a (∃\_tac \PrKM{}n\PrKO{} THEN asm\_rewrite\_tac[]);\\
+\+(* *** Goal "2" *** *)\\
+\+a (LEMMA\_T \PrKM{}∀ a a0 a1⦁ ¬ a0 \PrIJ{c} a1 = C a\PrKO{} rewrite\_thm\_tac\\
+\+	THEN1 (REPEAT strip\_tac THEN\_TRY rewrite\_tac[CT\_distinct]));\\
+\+(* *** Goal "2.1" *** *)\\
+\+a (rewrite\_tac [map\_eq\_sym\_rule (all\_∀\_elim CT\_distinct)]);\\
+\+(* *** Goal "2.2" *** *)\\
+\+a (∃\_tac \PrKM{}c1\PrKO{} THEN ∃\_tac \PrKM{}c2\PrKO{} THEN asm\_rewrite\_tac[]);\\
+\+val CT\_nchotomy = save\_pop\_thm "CT\_nchotomy";\\
+\end{GFT}
+}%ignore
+
+\subsection{Combinator Names}
+
+In the original hol4 treatment the combinators K and S were constructors of the abstract datatype.
+In this quasi replica I made the minor generalisation of allowing countably many constants using a constructor taking a natural number parameter.
+
+To make the material more legible I now define constants to give the conventional names to the S and K constructors as follows.
+
+\begin{HOLConst}
+\+\PrNM{} \PrNL{}K\PrIJ{c}\PrNN{}: CT\\
+\PrPH{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}
+\+\PrNM{}	K\PrIJ{c} = C 0\\
+\end{HOLConst}
+
+\begin{HOLConst}
+\+\PrNM{} \PrNL{}S\PrIJ{c}\PrNN{}: CT\\
+\PrPH{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}
+\+\PrNM{}	S\PrIJ{c} = C 1\\
+\end{HOLConst}
+
+Once I have replicated essentially the same Church Rosser proof for this pure combinatory logic I will then attempt a proof for an illative system with one illative combinatory.
+This will be called `Q'.
+
+\begin{HOLConst}
+\+\PrNM{} \PrNL{}Q\PrIJ{c}\PrNN{}: CT\\
+\PrPH{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}
+\+\PrNM{}	Q\PrIJ{c} = C 2\\
+\end{HOLConst}
+
+Since `Q' is intended to be a close approximation to equality, it might be nice to have the following way of writing equations:
+
+\begin{GFT}{SML}
+\+declare\_infix(300, "=\PrIJ{c}");\\
+\end{GFT}
+
+
+\begin{HOLConst}
+\+\PrNM{} \$\PrNL{}=\PrIJ{c}\PrNN{}: CT → CT → CT\\
+\PrPH{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}\PrPM{}
+\+\PrNM{} ∀a0 a1⦁ a0 =\PrIJ{c} a1 = (Q\PrIJ{c} \PrIJ{c} a0) \PrIJ{c} a1\\
+\end{HOLConst}
+
+This kind of equality delivers a combinatory term rather than a BOOL.
+True and false will probably be coded as left and right projections, i.e. K and KI (where I is the identity, which is SKK).
+
+These definitions really only give names to the combinators, to know what they mean you have to look at the reduction relations over the combinators.
+
+\begin{GFT}{SML}
+\+set\_flag ("subgoal\_package\_quiet", false);\\
+\+set\_flag ("pp\_use\_alias", true);\\
+\end{GFT}
+
+
+

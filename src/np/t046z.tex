@@ -1,0 +1,51 @@
+% $Id: t046z.tex,v 1.5 2011/05/16 21:40:17 rbj Exp $
+
+\section{Postscript}\label{POSTSCRIPT}
+
+I have now worked through the main body of Linnebo's paper, and the second of his two appendices.
+
+The first apendix is different in character, obtaining a result stated in terms of plural set theory for which an equivalent theorem is uncontroversial in ZFC, I shall not attempt to formalise this proof.
+
+The second appendix gives more details of and results in the modal/plural set theory.
+Much of this is metatheoretic.
+It would be possible to treat this more fully within the bounds of the syntax-free methods I have adopted, but this would be significantly more complex and time consuming than any of the other material so far undertaken, for relatively little further benefit.
+
+Beyond these technical details there is then the question of the philosophical significance both of Linnebo's paper and of this kind of formal treatment.
+
+There are then some problems in relation to the semantics of set theory not addressed by Linnebo which might benefit from the modal approach, and I may possibly add further material on these matters.
+
+\pagebreak
+
+\appendix
+
+\section{Theory Listings}
+
+{
+\let\Section\subsection
+\let\Subsection\subsubsection
+\def\subsection#1{\Subsection*{#1}}
+
+\def\section#1{\Section{#1}\label{t046a}\index{t046a}}
+\input{t046a.th}
+\pagebreak
+\def\section#1{\Section{#1}\label{t046b}\index{t046b}}
+\input{t046b.th}
+}  %\let
+
+
+\pagebreak
+
+\section*{Bibliography}\label{BIBLIOGRAPHY}
+\addcontentsline{toc}{section}{Bibliography}
+
+{\def\section*#1{\ignore{#1}}
+\raggedright
+\bibliographystyle{rbjfmu}
+\bibliography{rbj,fmu}
+} %\raggedright
+
+{\twocolumn[\section*{Index}\label{INDEX}]
+\addcontentsline{toc}{section}{Index}
+{\small\printindex}}
+
+\end{document}

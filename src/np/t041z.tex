@@ -1,0 +1,49 @@
+% $Id: t041z.tex,v 1.4 2011/03/11 21:43:51 rbj Exp $
+
+\section{Postscript}\label{POSTSCRIPT}
+
+After iterating over the abstract syntax for the infinitary system many times I have now managed to come up with a first cut at the semantics.
+This was not particularly easy for me, and the result is a bit of a mess, so even if it miraculously turns out actually to be correct, I will still in all probability have to massage it for a while longer to get it in a better state for reasoning with.
+
+The main requirement is something like a consistency proof, which in this context comes down to proving that true and false are not equivalent.
+I am not rushing into that.
+
+It is now possible, even in default of this consistency result, to start moving forward on the illative lambda calculus by thinking about and defining the primitives, and it may be possible to get some results in that theory (inconsistency, on the face of it, does not make it harder to get results!).
+So I will explore that a while before even starting on the consistency result, and then perhaps progress the two in tandem.
+
+\pagebreak
+\appendix
+
+\section{Theory Listings}
+
+\vfill
+
+{
+\let\Section\subsection
+\let\Subsection\subsubsection
+\def\subsection#1{\Subsection*{#1}}
+
+\def\section#1{\Section{#1}\label{icomb}}
+\input{icomb.th}
+\pagebreak
+\def\section#1{\Section{#1}\label{ilamb}}
+\input{ilamb.th}
+}  %\let
+
+
+\pagebreak
+
+\section*{Bibliography}\label{BIBLIOGRAPHY}
+\addcontentsline{toc}{section}{Bibliography}
+
+{\def\section*#1{\ignore{#1}}
+\raggedright
+\bibliographystyle{rbjfmu}
+\bibliography{rbj,fmu}
+} %\raggedright
+
+{\twocolumn[\section*{Index}\label{INDEX}]
+\addcontentsline{toc}{section}{Index}
+{\small\printindex}}
+
+\end{document}

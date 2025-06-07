@@ -1,0 +1,36 @@
+% $Id: t032z.tex,v 1.5 2012/02/14 20:44:22 rbj Exp $
+
+\section{Postscript}\label{POSTSCRIPT}
+
+\pagebreak
+\appendix
+
+{
+\let\Section\section
+\def\section#1{\Section{#1}\label{leibniz01}}
+\input{leibniz01.th}
+\pagebreak
+\def\section#1{\Section{#1}\label{leibniz02}}
+\input{leibniz02.th}
+\pagebreak
+\def\section#1{\Section{#1}\label{leibniz03}}
+\input{leibniz03.th}
+}  %\let
+
+\pagebreak
+
+\section*{Bibliography}\label{BIBLIOGRAPHY}
+\addcontentsline{toc}{section}{Bibliography}
+
+{\def\section*#1{\ignore{#1}}
+\raggedright
+\bibliographystyle{rbjfmu}
+\bibliography{rbj,fmu}
+} %\raggedright
+
+
+{\twocolumn[\section*{Index}\label{INDEX}]
+\addcontentsline{toc}{section}{Index}
+{\small\printindex}}
+
+\end{document}

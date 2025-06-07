@@ -1,0 +1,29 @@
+% $Id: t001z.tex,v 1.1 2009/08/05 06:47:11 rbj Exp $
+
+\section{Postscript}
+
+\appendix
+
+{
+\let\Section\section
+\def\section#1{\Section{#1}\label{t001a}}
+\include{t001a.th}
+\def\section#1{\Section{#1}\label{t001b}}
+\include{t001b.th}
+}  %\let
+
+\pagebreak
+\section*{Bibliography}\label{BIBLIOGRAPHY}
+\addcontentsline{toc}{section}{Bibliography}
+
+{\def\section*#1{\ignore{#1}}
+\raggedright
+\bibliographystyle{rbjfmu}
+\bibliography{rbj,fmu}
+} %\raggedright
+
+{\twocolumn[\section*{Index}\label{index}]
+\addcontentsline{toc}{section}{Index}
+{\small\printindex}}
+
+\end{document}

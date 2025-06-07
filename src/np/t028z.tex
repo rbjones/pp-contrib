@@ -1,0 +1,98 @@
+% $Id: t028z.tex,v 1.10 2011/03/11 21:43:51 rbj Exp $
+
+\section{Postscript}\label{POSTSCRIPT}
+
+These are the kinds of thing which {\it might} happen in future issues of this document:
+
+\begin{itemize}
+\item If I get constructive feedback (pointing out errors counts, telling me its a waste of time doesn't, explaining bits of Aristotle I'm getting wrong would be great) then I will probably do something about it.
+
+\item There is a good chance I will get to know something about what Aristotle really said and make improvements arising from this.
+In that case I would like to put some hyperlinks into my online hypertext of Aristotle's relevant works, connecting the specific features of the model with the passages in Aristotle which they reflect.
+
+\item I am interested in the methods, and I may spend more time trying to describe them in a way which might be intelligible to philosophers.
+
+\item If this ever becomes a good approximation to Aristotle's position there would then be some philosophical analysis of the metaphysics (by contrast with a purely logical analysis), and somewhere there are points to be made about the kind of analysis which I am aiming for.
+\end{itemize}
+
+There are three stages I envisage in the process of getting philosophical insights from this kind of work:
+
+\begin{description}
+\item[formal modelling]
+I now have a series of models.
+Of the Aristotelian Syllogism the final model (Sections \ref{IEIA}, \ref{syllog6}) may well be good enough, but the subsequent models (modal syllogisms and the metaphysics) still follow the same approach as earlier models of the syllogism which I no longer consider ideal, notably the presumption against empty predicates.
+I therefore have in mind that Sections \ref{MODSYLL}, and \ref{METAPHYSICSII} will be brought into line with the treatment in Section \ref{IEIA}.
+I also regret in my treatment of the modal syllogisms treating the modal operators as forms of judgement, so I might recant on that and make them propositional operators.
+When those changes are done a closer scrutiny of the model of the metaphysics will be needed, after which I can re-examine the Grice/Code material and see whether I can now make any better sense of it, as well as considering the real current target of my investigation, which is the comparative analysis of Plato and Aristotle on the nature of key concepts such as necessity and contingency, essential and accidental predication, and demonstrative truth.
+
+\item[model verification]
+The models need checking against Aristotle's writings.
+
+\item[formal analysis]
+Further formal work is needed to come to an understanding of these models.
+
+\item[philosophical analysis]
+After the models are formulated and verified, and formal analysis has deepened our undertanding of these models, we may then be in a position to obtain some interesting philosophical insights.
+
+\end{description}
+
+\pagebreak
+\appendix
+
+\vfill
+
+%\section{Glossary}
+
+\section{Theory Listings}
+{
+\let\Section\subsection
+\let\Subsection\subsubsection
+\def\subsection#1{\Subsection*{#1}}
+\pagebreak
+\def\section#1{\Section{#1}\label{ariscat}}
+\input{ariscat.th}
+\pagebreak
+\def\section#1{\Section{#1}\label{syllog1}}
+\input{syllog1.th}
+\pagebreak
+\def\section#1{\Section{#1}\label{syllog2}}
+\input{syllog2.th}
+\pagebreak
+\def\section#1{\Section{#1}\label{syllog3}}
+\input{syllog3.th}
+\pagebreak
+\def\section#1{\Section{#1}\label{syllog4}}
+\input{syllog4.th}
+\pagebreak
+\def\section#1{\Section{#1}\label{syllog5}}
+\input{syllog5.th}
+\pagebreak
+\def\section#1{\Section{#1}\label{syllog6}}
+\input{syllog6.th}
+\pagebreak
+\def\section#1{\Section{#1}\label{modsyllog}}
+\input{modsyllog.th}
+\pagebreak
+\def\section#1{\Section{#1}\label{syllmetap}}
+\input{syllmetap.th}
+\pagebreak
+\def\section#1{\Section{#1}\label{gccon}}
+\input{gccon.th}
+}  %\let
+
+\pagebreak
+
+\section*{Bibliography}\label{BIBLIOGRAPHY}
+\addcontentsline{toc}{section}{Bibliography}
+
+{\def\section*#1{\ignore{#1}}
+\raggedright
+\bibliographystyle{rbjfmu}
+\bibliography{rbj,fmu}
+} %\raggedright
+
+{\twocolumn[\section*{Index}\label{INDEX}]
+\addcontentsline{toc}{section}{Index}
+{\small\printindex}}
+
+\end{document}

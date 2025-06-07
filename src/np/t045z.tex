@@ -1,0 +1,79 @@
+% $Id: t045z.tex,v 1.5 2011/03/25 15:08:27 rbj Exp $
+
+\section{Postscript}\label{POSTSCRIPT}
+
+My ideas for this document have evolved from its starting point addressing some quite specific issued concerning modality, reference, opacity and substitution to an ambition to turn the story into a discussion of kinds of metaphysics, contrasting in particular some of the kinds of metaphysics which first appeared in Kripke's \emph{Naming and Necessity} with some kinds of metaphysics which seem to me intelligible and possibly even important from a perspective more sympathetic to the kind of philosophy practiced by Rudolf Carnap.
+
+In the consideration of Kripke I would like to attempt a translation, from the vocabulary of Kripke into a vocabulary with which Carnap would have been more comfortable.
+The aim of this would be to analyse the extent to which Kripkean metaphysics can properly be said to convey objective truths about reality.
+
+\pagebreak
+\appendix
+
+\vfill
+
+\section{Theories Listed using aliases}\label{TheoryListings}
+
+Note that aliases are used in the theory listings when printing the substance of definitions, and it may therefore appear as if an existing constant is being defined (if the new constant was then give that name as an alias).
+On the left of the definition the keys (which may be used to retrieve the definitions) are the actual names of the constants defined, unaffected by the use of aliases.
+
+{
+\let\Section\subsection
+\let\Subsection\subsubsection
+\def\subsection#1{\Subsection*{#1}}
+
+\pagebreak
+\def\section#1{\Section{#1}\label{t045}}
+\input{t045.th}
+\pagebreak
+\def\section#1{\Section{#1}\label{t045q}}
+\input{t045q.th}
+\pagebreak
+\def\section#1{\Section{#1}\label{t045k}}
+\input{t045k.th}
+\pagebreak
+\def\section#1{\Section{#1}\label{t045w}}
+\include{t045w.th}
+}  %\let
+
+\pagebreak
+\section{Theories Listed without using aliases}\label{TheoryListingsWithoutAliases}
+
+In some cases aliasing does make it more difficult to understand the material, and the theories are therefore listed again without aliases in case this should prove necessary for the reader to disambiguate the content.
+
+The effect is of a greater clutter of disambiguating subscripts or superscripts which make explicit the variant of a concept used at any point in the theory.
+
+{
+\let\Section\subsection
+\let\Subsection\subsubsection
+\def\subsection#1{\Subsection*{#1}}
+
+\def\section#1{\Section{#1}\label{t045na}}
+\input{t045.thna}
+\pagebreak
+\def\section#1{\Section{#1}\label{t045qna}}
+\input{t045q.thna}
+\pagebreak
+\def\section#1{\Section{#1}\label{t045kna}}
+\input{t045k.thna}
+\pagebreak
+\def\section#1{\Section{#1}\label{t045wna}}
+\input{t045w.thna}
+}  %\let
+
+\pagebreak
+
+\section*{Bibliography}\label{BIBLIOGRAPHY}
+\addcontentsline{toc}{section}{Bibliography}
+
+{\def\section*#1{\ignore{#1}}
+\raggedright
+\bibliographystyle{rbjfmu}
+\bibliography{rbj,fmu}
+} %\raggedright
+
+{\twocolumn[\section*{Index}\label{INDEX}]
+\addcontentsline{toc}{section}{Index}
+{\small\printindex}}
+
+\end{document}

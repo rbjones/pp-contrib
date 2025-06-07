@@ -82,8 +82,7 @@ HOLPPS1= t000.pp \
 	t022.pp t023.pp t024.pp t025.pp t026.pp t027.pp t031.pp \
 	t033.pp t034.pp t042.pp t043.pp t051.pp t052.pp t053.pp \
 	t054.pp t056.pp t057.pp t058.pp\
-	nt001.pp
-#  nt002.pp
+	nt001.pp nt002.pp
 
 # Three file ppsvf cases 
 
@@ -553,7 +552,7 @@ doc:	docrel
 
 clean:
 	rm -f $(HOLTEXS) $(SMLFILES) $(LDDFILES)
-	rm -f *.aux *.bbl *.blg *.err *.idx *.log *.lot *.out *.sid *.sid-e *.th.tex-e *.thna.pp *.thna.tex-e *.toc $(HOLDBNAME).ldd *.th.pp \#*\# *.stats.doc
+	rm -f *.aux *.bbl *.blg *.err *.idx *.log *.lot *.out *.sid *-e *.thna.pp *.toc $(HOLDBNAME).ldd *.th.pp \#*\# *.stats.doc
 
 ######################################################################
 #

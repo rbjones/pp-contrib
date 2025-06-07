@@ -1,0 +1,45 @@
+% $Id: t039z.tex,v 1.6 2011/03/11 21:43:51 rbj Exp $
+
+\section{Postscript}\label{POSTSCRIPT}
+
+My main near term objective for this document is to supply the necessary lattice theory for X-Logic.
+
+For this purpose I need to be able to reason about quotient lattices, and therefore am thinking in terms of a general quotient construction in universal algebra applied in the lattice theory.
+
+A general theory of quotient algebras is therefore my next objective.
+
+\pagebreak
+\appendix
+
+\section{Theory Listings}
+{
+\let\Section\subsection
+\let\Subsection\subsubsection
+\def\subsection#1{\Subsection*{#1}}
+
+\def\section#1{\Section{#1}\label{equiv}}
+\input{equiv.th}
+\pagebreak
+\def\section#1{\Section{#1}\label{unalg}}
+\input{unalg.th}
+\pagebreak
+\def\section#1{\Section{#1}\label{lattice}}
+\input{lattice.th}
+}  %\let
+
+\pagebreak
+
+\section*{Bibliography}\label{BIBLIOGRAPHY}
+\addcontentsline{toc}{section}{Bibliography}
+
+{\def\section*#1{\ignore{#1}}
+\raggedright
+\bibliographystyle{rbjfmu}
+\bibliography{rbj,fmu}
+} %\raggedright
+
+{\twocolumn[\section*{Index}\label{INDEX}]
+\addcontentsline{toc}{section}{Index}
+{\small\printindex}}
+
+\end{document}

@@ -1,8 +1,8 @@
 # git ignores for ProofPower.
 # directories created by the C compiler on Mac OS X.
 *.dSYM/
-# Suffixes of files generated during the build process. N.b., all .tex files
-# are generated.
+# Suffixes of files generated during the build process.
+# N.B. .tex files are generally generated, but not in np so *.tex pushed down.
 *.aux
 *.bbl
 *.blg
@@ -27,7 +27,6 @@
 *.th.doc
 *.thl.doc
 *.thy.doc
-*.tex
 *.theories
 *.toc
 *.ttd

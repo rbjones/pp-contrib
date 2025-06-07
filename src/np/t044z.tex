@@ -1,0 +1,25 @@
+% $Id: t044z.tex,v 1.2 2011/03/11 21:43:51 rbj Exp $
+
+\section{Postscript}\label{POSTSCRIPT}
+
+\pagebreak
+\appendix
+
+\input{unalgII.th}
+
+\pagebreak
+
+\section*{Bibliography}\label{BIBLIOGRAPHY}
+\addcontentsline{toc}{section}{Bibliography}
+
+{\def\section*#1{\ignore{#1}}
+\raggedright
+\bibliographystyle{rbjfmu}
+\bibliography{rbj,fmu}
+} %\raggedright
+
+{\twocolumn[\section*{Index}\label{INDEX}]
+\addcontentsline{toc}{section}{Index}
+{\small\printindex}}
+
+\end{document}
