@@ -1,0 +1,153 @@
+\def\rbjidbAACtex{$Id: b002.tex,v 1.14 2012/02/14 20:44:22 rbj Exp $}
+
+\documentclass[11pt]{book}
+\usepackage{latexsym}
+\usepackage{ProofPower}
+\usepackage{amssymb}
+\ftlinepenalty=9999
+
+%\usepackage{A4} see next two lines instead.
+\advance\parskip by 0.5\baselineskip
+\parindent 0pt  % was 20pt, in `lplain.tex', and 15pt in `art10.sty'.
+
+% from amssymb
+\def\PrJA{\Vdash}	%Modify printing for ê (syntactic entailment)
+\def\PrJI{\vDash}	%Modify printing for ò
+% the following two modal operators come from the amsfonts package
+\def\PrKI{\Diamond}	%Modify printing for ®
+\def\PrKJ{\Box}		%Modify printing for ©
+
+\def\ExpName{\mbox{{\sf exp}}}
+\def\Exp#1{\ExpName(#1)}
+
+\tabstop=0.4in
+\newcommand{\ignore}[1]{}
+
+\title{Analyses of Analysis: Volume III - Theory Listings}
+\makeindex
+\usepackage[unicode,pdftex]{hyperref}
+\pagestyle{headings}
+%\usepackage[a4paper,totalwidth={6.75in},totalheight={10.5in},includehead,includefoot]{geometry}
+\usepackage{amazon2}
+\author{Roger Bishop Jones}
+\date{\ }
+
+\begin{document}
+\begin{titlepage}
+\maketitle
+
+\vfill
+
+\begin{centering}
+{\footnotesize
+
+Created 2009/06/18
+
+Last Change $ $Date: 2012/02/14 20:44:22 $ $
+
+$ $Id: b002.tex,v 1.14 2012/02/14 20:44:22 rbj Exp $ $
+
+\copyright\ Roger Bishop Jones
+
+}%footnotesize
+\end{centering}
+
+\thispagestyle{empty}
+\end{titlepage}
+
+\newpage
+\addtocounter{page}{1}
+{\parskip=0pt\tableofcontents}
+
+\chapter{Introduction}
+
+\chapter{Plato and Aristotle}
+{
+\let\Section\section
+\def\subsection#1{}
+\def\section#1{\Section{#1}\label{aristotle}}
+\include{aristotle.th}
+\def\section#1{\Section{#1}\label{syllog1}}
+\include{syllog1.th}
+\def\section#1{\Section{#1}\label{syllog2}}
+\include{syllog2.th}
+\def\section#1{\Section{#1}\label{syllog3}}
+\include{syllog3.th}
+\def\section#1{\Section{#1}\label{syllog4}}
+\include{syllog4.th}
+\def\section#1{\Section{#1}\label{syllog5}}
+\include{syllog5.th}
+\def\section#1{\Section{#1}\label{syllog6}}
+\include{syllog6.th}
+\def\section#1{\Section{#1}\label{modsyllog}}
+\include{modsyllog.th}
+\def\section#1{\Section{#1}\label{ariscat}}
+\include{ariscat.th}
+\def\section#1{\Section{#1}\label{syllmetap}}
+\include{syllmetap.th}
+\def\section#1{\Section{#1}\label{gccon}}
+\include{gccon.th}
+}  %\let
+
+\chapter{Leibniz}
+{
+\let\Section\section
+\def\subsection#1{}
+\def\section#1{\Section{#1}\label{leibniz01}}
+\include{leibniz01.th}
+\def\section#1{\Section{#1}\label{leibniz02}}
+\include{leibniz02.th}
+\def\section#1{\Section{#1}\label{leibniz03}}
+\include{leibniz03.th}
+}  %\let
+
+\chapter{Russell and Wittgenstein}
+{
+\let\Section\section
+\def\subsection#1{}
+\def\section#1{\Section{#1}\label{tract01}}
+\include{tract01.th}
+}  %\let
+
+\chapter{Grice}
+{
+\let\Section\section
+\def\subsection#1{}
+\def\section#1{\Section{#1}\label{grice}}
+\include{grice.th}
+\def\section#1{\Section{#1}\label{gricec}}
+\include{gricec.th}
+\def\section#1{\Section{#1}\label{grices}}
+\include{grices.th}
+}  %\let
+
+\chapter{Logical Foundations}
+
+\chapter{Universal Algebra and Lattice Theory}
+{
+\let\Section\section
+\def\subsection#1{}
+\def\section#1{\Section{#1}\label{unalg}}
+\include{unalg.th}
+\def\section#1{\Section{#1}\label{lattice}}
+\include{lattice.th}
+}  %\let
+
+
+\pagebreak
+
+{\twocolumn[\section*{Index}\label{index}]
+\addcontentsline{toc}{chapter}{Index}
+{\small\printindex}}
+
+\vfil
+
+{\tiny
+\begin{centering}
+\begin{tabular}{l}
+%\rbjidbAACtex \\ % 
+\end{tabular}
+\end{centering}
+}%tiny
+
+\end{document}

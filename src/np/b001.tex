@@ -1,0 +1,148 @@
+\def\rbjidbAABtex{$$Id: b001.tex,v 1.13 2011/01/05 11:02:31 rbj Exp $$}
+
+\documentclass[11pt]{book}
+\usepackage{latexsym}
+\usepackage{ProofPower}
+\usepackage{amssymb}
+\ftlinepenalty=9999
+
+%\usepackage{A4} see next two lines instead.
+\advance\parskip by 0.5\baselineskip
+\parindent 0pt  % was 20pt, in `lplain.tex', and 15pt in `art10.sty'.
+
+% the following two modal operators come from the amsfonts package
+\def\PrKI{\Diamond}	%Modify printing for ®
+\def\PrJI{\models}	%Modify printing for ò
+
+\def\PrJA{\Vdash}	%Modify printing for ê (syntactic entailment)
+\def\PrJI{\vDash}	%Modify printing for ò (semantic entailment)
+
+\def\thyref#1{listing of theory {\it #1}\cite{rbjb001}}
+\def\ExpName{\mbox{{\sf exp}}}
+\def\Exp#1{\ExpName(#1)}
+
+\tabstop=0.4in
+\newcommand{\ignore}[1]{}
+
+\title{Analyses of Analysis - Part I - Exegetical Analysis}
+\makeindex
+\usepackage[unicode,pdftex]{hyperref}
+\pagestyle{headings}
+%\usepackage[a4paper,totalwidth={6.75in},totalheight={10.5in},includehead,includefoot]{geometry}
+\usepackage{amazon2}
+\author{Roger Bishop Jones}
+\date{\ }
+
+\begin{document}
+\begin{titlepage}
+\maketitle
+
+\vfill
+
+\begin{centering}
+{\footnotesize
+
+Created 2009/06/18
+
+Last Change $ $Date: 2011/01/05 11:02:31 $ $
+
+$ $Id: b001.tex,v 1.13 2011/01/05 11:02:31 rbj Exp $ $
+
+\copyright\ Roger Bishop Jones
+
+}%footnotesize
+\end{centering}
+
+\thispagestyle{empty}
+\end{titlepage}
+
+\newpage
+\addtocounter{page}{1}
+{\parskip=0pt\tableofcontents}
+
+\chapter{Introduction}
+
+\section{Methods}
+
+The analyses in this volume of aspects of the work of various important philosophers are undertaken using modern formal methods with the help of supporting information technology.
+Information about these tools and methods is presented in Volume II of this work, which is concerned with synthetic rather than exegetical analysis.
+
+\section{Themes}
+
+It is my aim to trace the history and origin of some of the ideas which underpin formal analysis of the kinds addressed in Volume II.
+It is to be expected that as the work progresses my ideas about what the important ideas are will evolve, and this account of the principle ideas will be expanded and refined.
+
+In the first place the following short list will suffice:
+
+\begin{itemize}
+\item The distinction between logical and factual truths.
+My use of the definite article here reflects my prejudice that there is one important distinction which has and continues to evolve corresponding to Hume's distinction between <i>relations between ideas</i> and <i>matters of fact</i>.
+The various related dichotomies include:
+\begin{itemize}
+\item Necessity and Contingency 
+\item Essential and Accidental predication
+\item Demonstrative truth
+\item a priori and a posteriori knowledge
+\item the analytic/synthetic distinction
+\item Logical verses empirical truth.
+\item The notions of tautology, truth functions and truth conditions
+\end{itemize}
+\item The evolution of formality.
+\end{itemize}
+
+\chapter{Plato and Aristotle}
+
+\include{t028m}
+
+\chapter{Leibniz}
+
+\include{t032m}
+
+\chapter{Hume and Kant}
+
+\chapter{Frege}
+
+\chapter{Russell and Wittgenstein}
+
+\include{t030m}
+
+\chapter{Grice}
+
+\include{t037m}
+
+\chapter{Conclusions}
+
+\pagebreak
+
+%\section*{Bibliography}
+\label{Bibliography}
+\addcontentsline{toc}{chapter}{Bibliography}
+
+{\def\section*#1{\ignore{#1}}
+\raggedright
+\bibliographystyle{rbjfmu}
+\bibliography{rbj,fmu}
+} %\raggedright
+
+\vfil
+
+\pagebreak
+\label{Index}
+\addcontentsline{toc}{chapter}{Index}
+{\twocolumn[\section*{Index}]
+{\small\printindex}}
+
+\vfill
+
+{\tiny
+\begin{centering}
+\begin{tabular}{l}
+\rbjidbAABtex\\ %t001
+%\rbjidtACJdoc\\ %t029
+\rbjidtACIdoc\\ %t028
+\rbjidtADCdoc\\ %t032
+\rbjidtADAdoc\\ %t030
+\end{tabular}
+\end{centering}}
+
+\end{document}
