@@ -21,9 +21,9 @@
 \newcommand{\hreg}[2]{\href{#1}{#2}\footnote{\url{#1}}}
 \makeindex
 
-\title{\LARGE\bf Advancing Deductive Automation and a Deductive Paradigm}
+\title{\LARGE\bf Focal Engineering}
 \author{Roger~Bishop~Jones}
-\date{\small 2025:05:27}
+\date{\small 2025:06:10}
 
 
 \begin{document}
@@ -62,8 +62,41 @@
 
 \section{Introduction}
 
-My main interest is in progressing certain speculative ideas, albeit in perhaps modest ways.
-There are quite a number of ideas that I am interested in progressing, and I have presened a first sketch of these ideas in three tiers according to how radical the departure is from existing technology, and how readily these ideas can be progressed in the context of contemporary technology.
+This document is a re-think about the connection between AI and the automation of formal deduction and its applications.
+
+I have a long standing interest in AI, in the logical foundations of mathematics and the automation of deductive reason and its applications, spanning many decades.
+During that time there have been periods in which the automation of deduction has seemed central to the achievement of AI, and those in which it has seemed largely ignored or at best a promising application of AI rather than the means to achieve it.
+
+For the purposes of this discussion it will be useful to distinguish approaches to AI as emergent or focal.
+Emergent approaches are those in which general, if at first relatively superficial,  capapbilities are sought and progressed vigorously with the expectation that deeoer intelligence will appear as an \emph{emergent} phenomenon.
+Focal approaches are those which regard certain capabilities as enabling intelligence in all domains, and, effectively treating those special capabilities as the X-factor in intelligence focusses on advancing those particular capabilities which in due course will prove widely applicable.
+
+This is of course a false dichotomy, but despite hybrid approaches, the considerable advances lately secured by Large Language Models, fall into the emergent rather than the focal camp.
+This discussion concerns the opposite pole.
+
+I begin with a fairly broad discussion of phenomeon which might be considered focal which have some relevance to the automation of deduction and the development of AI, and aim to transform that discussion into a focal strategy for engineering intelligence through deduction. 
+
+
+\section{What is Intelligence}
+
+WHen Turing wrote his most influential paper on Artificial Intelligence which articulated a criterion which became known as the Turing Test, deliberately and explicitly disavowed attempting to define intelligence, but rather, for the sake of discussion, offered instead of the very uncertain concept of intelligence a related but more definitely defined concept measured by his test.
+
+I have a similar difficulty in speaking about intelligence, which I think of as a poorly defined concept which misprepresents the diversity of human intellectual capabilities and is incompatible with the evolutionary history of the human brain.
+
+The thesis behing the notion of intelligence, and its measurability as a linealry ordered intelligence quotient, is that human mental capabilities have two components, knowledge and intelligence.
+Intelligence for any individual is a fixed magic ingredient which affects how readily knowledge is acquired and the level of capability which is then derived from that knowledge.
+Differential capabilities arise in part from differences in knowledge, and in part from differences of intelligence as to the comprehension and application of the knowledge.
+
+This conception of intelligence leads us naturally to a focal approach to its realisation.
+Gathering knowledge will enable more applications, but only in those areas covered by the knowledge, while advancing intelligence confers advantage in all domains and improves the pace of acquisition and comprehension of the knowledge necessary to any application domain.
+
+
+
+
+
+
+=============
+
 
 The start point for this exercise is ProofPower support for Cambridge HOL.
 I won't go into the merit of that baseline, except to say that the logical system has the characteristics which seem to me most germinal for the roles which I envisage, and the implementation in ProofPower is one with which I am familiar, and which is well documented including a suite of formal specifications in HOL itself.

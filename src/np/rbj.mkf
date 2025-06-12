@@ -73,7 +73,7 @@ RELDIR=release
 
 # The documents
 
-# Single file ppsvf cases 
+# Single file ppsvf cases
 
 HOLPPS1= t000.pp \
 	t002.pp t003.pp t004.pp t005.pp t006.pp t007.pp \
@@ -363,10 +363,11 @@ t030.ldd: t025.ldd
 t031.ldd: t025.ldd
 t032.ldd: t025.ldd t028.ldd
 t033.ldd: t025.ldd
-t041.ldd: t004.ldd t005.ldd t025.ldd t039.ldd t043.ldd
+t041.ldd: t004.ldd t005.ldd t025.ldd t039.ldd t042.ldd t043.ldd
 t050.ldd: t004.ldd t005.ldd t025.ldd t039.ldd t043.ldd
 t051.ldd: t005.ldd t007.ldd t009.ldd t048.ldd
-t056.ldd: t009.ldd
+# t056 tramples over some names used by GSU so must be built after t044
+t056.ldd: t009.ldd t044.ldd
 t057.ldd: t009.ldd
 t058.ldd: t056.ldd
 
@@ -559,7 +560,7 @@ doc:	docrel
 
 clean:
 	rm -f $(HOLTEXS) $(SMLFILES) $(LDDFILES)
-	rm -f *.aux *.bbl *.blg *.err *.idx *.log *.lot *.out *.sid *-e *.thna.pp *.sml *.toc *.th.pp \#*\# *.stats.doc
+	rm -f *.aux *.bbl *.blg *.err *.idx *.log *.lot *.out *.sid *-e *.thna.pp *.sml *.toc *.th.pp \#*\# *.stats.doc t000abs.tex
 
 ######################################################################
 #
