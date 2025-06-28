@@ -1300,7 +1300,7 @@ val lt⋎u_induction_thm = save_thm ("lt⋎u_induction_thm",
 │	       {x:'b | ∃y:'a ℙ⦁ y <⋎u w ∧ x = f (y ∩ w)}
 ■
 
-\subsection{Enumerations and Limits}
+\section{ENUMERATIONS AND LIMITS}
 
 When we come to the applications of these ordinals enumerations will be central, and in order to define enumerations recursively it will be necessary to form limits.
 
@@ -1455,228 +1455,6 @@ val X⋎u⦎_def = get_spec ⌜X⋎u⦎⌝;
 val I⋎u⦎_def = get_spec ⌜I⋎u⦎⌝;
 =TEX
 }%ignore
-
-\subsection{Defining Inaccessibility}
-
-When we come to define functions over ordinals we become dependent on closure properties of the ordinals.
-
-To obtain convenient closure properties we constrain the theory to operate over types of sufficient cardinality and other properties.
-We will also introduce a type constructor which creates types characterised by a strong axiom of infinity, with good closure properties, for example, closed under dependent function space construction, and having inacessible cardinality.
-
-To do this we must first introduce some terminology.
-
-The significance of this section to the purposes of this work is moot, since the strong axiom of infinity, which implicitly asserts the existence of inaccessible 'a ordinals, does not depend upon an explicit definition.
-
-The purpose of this section is therefore as a kind of check on the formulation of that axiom.
-This check could go as far as defining inaccessible and proving the equivalence of the given axiom with a formulation based on the defined concept.
-However, to serve that pupose this material would have to come before the axiom, since in the context of that axiom we cannot distinguish between equivalence and entailment of the new formulation by the old.
-
-Co-finality is usually a relation between increasing $β$ sequences (β a limit 'a ordinal) and some limit 'a ordinal $α$.
-I don't yet have sequences, so its convenient to give a slightly broader definition.
-Instead of increasing sequences I allow the image of any 'a ordinal under a function (which need not be increasing).
-At this point I don't actually understand why an increasing sequence is asked for in the usual definition.
-
-Such an image is ``cofinal'' in an 'a ordinal if:
-
-\begin{itemize}
-\item the image falls entirely below the 'a ordinal
-\item the supremum of the image is that 'a ordinal
-\end{itemize}
-
-=SML
-declare_infix(400, "CofinalIn⋎o");
-=TEX
-
-ⓈHOLCONST
-│ $⦏CofinalIn⋎o⦎: (('a → 'a) × 'a) → 'a → BOOL
-├───────────
-│ ∀x γ⦁ x CofinalIn⋎o γ ⇔ Image⋎o x ⊆ X⋎o γ ∧ γ ∈ SUb⋎o(Image⋎o x) ∧ SupIm⋎o x = γ 
-■
-
-ⓈHOLCONST
-│ ⦏Cf⋎o⦎: 'a → 'a
-├───────────
-│ ∀β⦁ Cf⋎o β = ⋂⋎o {γ | ∃f⦁ (f, γ) CofinalIn⋎o β}
-■
-
-We can now define the notion of regularity, one of the defining properties of inaccessible cardinals.
-
-ⓈHOLCONST
-│ ⦏Regular⋎o⦎: 'a → BOOL
-├───────────
-│ ∀β⦁ Regular⋎o β ⇔ Cf⋎o β = β
-■
-
-ⓈHOLCONST
-│ ⦏Singular⋎o⦎: 'a → BOOL
-├───────────
-│ ∀β⦁ Singular⋎o β ⇔ ¬ Regular⋎o β
-■
-
-As well as using this in the definition of inaccessibility we want to be able to state that the universe is regular (to get sufficiently generous recursion principles, analogous to global replacement).
-The vocabulary above doesn't really help in stating this global principle, but it is simple enough to state directly.
-We will come to that later.
-
-To get inaccessibilty we need also to express the notion of a strong limit.
-
-ⓈHOLCONST
-│ ⦏Succ⋎o⦎: 'a → 'a
-├───────────
-│ ∀β⦁ Succ⋎o β = ⋂⋎o {γ | β <⋎o γ}
-■
-
-ⓈHOLCONST
-│ ⦏Successor⋎o⦎: 'a → BOOL
-├───────────
-│ ∀β⦁ Successor⋎o β ⇔ ∃γ⦁ γ <⋎o β ∧ β = Succ⋎o γ
-■
-
-ⓈHOLCONST
-│ ⦏Limit⋎o⦎: 'a → BOOL
-├───────────
-│ ∀β⦁ Limit⋎o β ⇔ 0⋎o <⋎o β ∧ ¬ Successor⋎o β
-■
-
-ⓈHOLCONST
-│ ⦏ω⋎o⦎: 'a
-├───────────
-│ ω⋎o = ⋂⋎o {β | Limit⋎o β}
-■
-
-As well as asking for a universe with inaccessibles, it is desirable to have good closure properties for the universe.
-Asserting that ever ordinal is followed by an inaccessible does a lot of that, but does not entail global replacement, so I express the ordinal analogue of replacement as a property of classes of ordinals so that it can be asserted of the whole type of ordinals.
-
-It is then possible to check the definitions by reasoning about the relationship between replacement and regularity.
-
-ⓈHOLCONST
-│ ⦏Rc⦎: 'a ℙ → BOOL
-├───────────
-│ ∀A⦁ Rc A ⇔ ∀β f⦁ β ∈ A
-│      ∧ (∀ν:'a⦁ ν <⋎o β ⇒ f ν ∈ A)
-│      ⇒ ∃ρ⦁ ρ ∈ A ∧ (∀ν⦁ ν <⋎o β ⇒ f ν <⋎o ρ)
-■
-
-=GFT
-=TEX
-
-\ignore{
-=SML
-val Succ⋎o_def = get_spec ⌜Succ⋎o⌝;
-val Successor⋎o_def = get_spec ⌜Successor⋎o⌝;
-val Limit⋎o_def = get_spec ⌜Limit⋎o⌝;
-val ω⋎o_def = get_spec ⌜ω⋎o⌝;
-
-=IGN
-set_goal([], ⌜Limit⋎o ω⋎o ∧ ∀β⦁ Limit⋎o β ⇒ ω⋎o ≤⋎o β⌝);
-a (rewrite_tac[ω⋎o_def]);
-
-=TEX
-}%ignore
-
-ⓈHOLCONST
-│ ⦏StrongLimit⋎o⦎: 'a → BOOL
-├───────────
-│ ∀β⦁ StrongLimit⋎o β ⇔ ∀γ⦁ γ <⋎o β ⇒ ℙ (X⋎o γ) <⋎s X⋎o β
-■
-
-ⓈHOLCONST
-│ ⦏Inaccessible⋎o⦎: 'a → BOOL
-├───────────
-│ ∀β⦁ Inaccessible⋎o β ⇔
-│       	     Regular⋎o β
-│ 		     ∧ StrongLimit⋎o β
-│ 		     ∧ ∃ η⦁ η <⋎o β ∧ Limit⋎o η
-■
-
-\ignore{
-=SML
-val Inaccessible⋎o_def = get_spec ⌜Inaccessible⋎o⌝;
-val CofinalIn⋎o_def = get_spec ⌜$CofinalIn⋎o⌝;
-val Cf⋎o_def = get_spec ⌜Cf⋎o⌝;
-val Regular⋎o_def = get_spec ⌜Regular⋎o⌝;
-val StrongLimit⋎o_def = get_spec ⌜StrongLimit⋎o⌝;
-=IGN
-
-set_goal([], strong_infinity2);
-a (∀_tac);
-a (strip_asm_tac (∀_elim ⌜β⌝ strong_infinity)
-	THEN REPEAT strip_tac
-	THEN asm_fc_tac[]);
-(* *** Goal "1" *** *)
-a (strip_asm_tac (∀_elim ⌜β⌝ strong_infinity));
-a (∃_tac ⌜γ⌝ THEN asm_rewrite_tac
-	[Limit⋎o_def, CofinalIn⋎o_def, Cf⋎o_def,
-	Regular⋎o_def, StrongLimit⋎o_def]);
-a (REPEAT strip_tac THEN asm_fc_tac[]);
-
-set_labelled_goal "2";
-a (spec_nth_asm_tac 2 ⌜f⌝);
-(* *** Goal "2.1" *** *)
-a (∃_tac ⌜ρ⌝ THEN asm_rewrite_tac[]);
-(* *** Goal "2.2" *** *)
-a (∃_tac ⌜ρ⌝ THEN asm_rewrite_tac[]);
-
-=TEX
-}%ignore
-
-The basic idea is to state that every 'a ordinal is less than some (strongly) inaccessible 'a ordinal (also a cardinal), with a little tweak to give, in effect, global replacement  (or its analogue for a theory of 'a ordinals rather than sets).
-Here local replacement is the requirement that each 'a ordinal is less than some regular cardinal, global replacement tells us that the universe is regular.
-The other requirement is that this regular cardinal is a strong limit, i.e. closed under powerset.
- 
-To validate this principle I could first prove the principal in the set theory in t023, or alternatively in t041 since the 'a ordinals are further developed there.
-That would gives greater confidence in its consistency.
-That it is adequate can be testing in use, or by constructing a set theory from this type of 'a ordinals which satisifies the first principle.
-
-However, without further validation I now proceed to establish that it can be used to justify a convenient recursion principle.
-
-The first step in this is to define a couple of functions using our axiom of infinity.
-
-The first is a function which, given an infinite 'a ordinal, will deliver the least inaccessible 'a ordinal greater than that 'a ordinal, given a finite 'a ordinal it returns $ω$.
-I will call this $Lio$.
-
-\ignore{
-=IGN
-set_goal(∃Lio:'a ordinal → 'a ordinal⦁
-∀β⦁ let γ = Lio β in 
-    β < γ
-    ∧ ∀τ⦁ τ <⋎o γ ⇒ 
-	   ℙ (X⋎o τ) <⋎s X⋎o γ
-	∧ (∀f⦁ (∀ν⦁ ν <⋎o τ ⇒ f ν <⋎o τ)
-		⇒ (∃ρ⦁ ρ <⋎o γ ∧ (∀ν⦁ ν <⋎o τ ⇒ f ν <⋎o ρ)))
-=TEX
-
-
- ⓈHOLCONST
-│ ⦏G⋎o⦎: 'a → 'a
- ├──────────
-│ ∀β⦁ G⋎o β = ⋂⋎o {γ | β <⋎o γ ∧ ω⋎o <⋎o γ
-    ∧ ∀τ⦁ τ <⋎o γ ⇒ 
-	   ℙ (X⋎o τ) <⋎s X⋎o γ
-	∧ (∀f⦁ (∀ν⦁ ν <⋎o τ ⇒ f ν <⋎o τ)
-		⇒ (∃ρ⦁ ρ <⋎o γ ∧ (∀ν⦁ ν <⋎o τ ⇒ f ν <⋎o ρ)))}
- ■
-}%ignore
-
-=GFT
-=TEX
-
-\ignore{
- =SML
-val G⋎o_def = get_spec ⌜G⋎o⌝;
-
-list_∀_elim [⌜{γ | β <⋎o γ ∧ ω⋎o <⋎o γ
-    ∧ ∀τ⦁ τ <⋎o γ ⇒ 
-	   ℙ (X⋎o τ) <⋎s X⋎o γ
-	∧ (∀f⦁ (∀ν⦁ ν <⋎o τ ⇒ f ν <⋎o τ)
-		⇒ (∃ρ⦁ ρ <⋎o γ ∧ (∀ν⦁ ν <⋎o τ ⇒ f ν <⋎o ρ)))}⌝] ⋂⋎o_def;
-
-=IGN
-set_goal([], ⌜∀β⦁ 
-
-⌝);
-=TEX
-}%ignore
-
 \subsection{Defining Functions over the Ordinals}
 
 Often functions over \emph{'a ordinals} are defined by cases in a manner analogous to primitive recursive definitions over the natural numbers (in which the cases are zero and successors) by adding a further case for limit 'a ordinals.
@@ -2035,15 +1813,247 @@ set_goal([], ⌜∀ f s⦁ LimitPenIm⋎u (s ◁⋎u f) s = LimitPenIm⋎u f s�
 =TEX
 }%ignore
 
-\section{INDUCTIVE DATA TYPES}
+\section{DEFINING INACCESSIBILITY}
 
+\ignore{
 =SML
 open_theory "ordinals";
-force_new_theory "⦏idt⦎";
-force_new_pc "⦏'idt⦎";
-merge_pcs ["'savedthm_cs_∃_proof"] "'idt";
-set_merge_pcs ["rbjmisc", "'ordinals", "'idt"];
+force_new_theory "⦏inaccess⦎";
+force_new_pc "⦏'inaccess⦎";
+merge_pcs ["'savedthm_cs_∃_proof"] "'inaccess";
+set_merge_pcs ["rbjmisc","'ordinals", "'inaccess"];
 =TEX
+}%ignore
+
+When we come to define functions over ordinals we become dependent on closure properties of the ordinals.
+
+To obtain convenient closure properties we constrain the theory to operate over types of sufficient cardinality and other properties.
+We will also introduce a type constructor which creates types characterised by a strong axiom of infinity, with good closure properties, for example, closed under dependent function space construction, and having inacessible cardinality.
+
+To do this we must first introduce some terminology.
+
+The significance of this section to the purposes of this work is moot, since the strong axiom of infinity, which implicitly asserts the existence of inaccessible 'a ordinals, does not depend upon an explicit definition.
+
+The purpose of this section is therefore as a kind of check on the formulation of that axiom.
+This check could go as far as defining inaccessible and proving the equivalence of the given axiom with a formulation based on the defined concept.
+However, to serve that pupose this material would have to come before the axiom, since in the context of that axiom we cannot distinguish between equivalence and entailment of the new formulation by the old.
+
+Co-finality is usually a relation between increasing $β$ sequences (β a limit 'a ordinal) and some limit 'a ordinal $α$.
+I don't yet have sequences, so its convenient to give a slightly broader definition.
+Instead of increasing sequences I allow the image of any 'a ordinal under a function (which need not be increasing).
+At this point I don't actually understand why an increasing sequence is asked for in the usual definition.
+
+Such an image is ``cofinal'' in an 'a ordinal if:
+
+\begin{itemize}
+\item the image falls entirely below the 'a ordinal
+\item the supremum of the image is that 'a ordinal
+\end{itemize}
+
+=SML
+declare_infix(400, "CofinalIn⋎o");
+=TEX
+
+ⓈHOLCONST
+│ $⦏CofinalIn⋎o⦎: (('a → 'a) × 'a) → 'a → BOOL
+├───────────
+│ ∀x γ⦁ x CofinalIn⋎o γ ⇔ Image⋎o x ⊆ X⋎o γ ∧ γ ∈ SUb⋎o(Image⋎o x) ∧ SupIm⋎o x = γ 
+■
+
+ⓈHOLCONST
+│ ⦏Cf⋎o⦎: 'a → 'a
+├───────────
+│ ∀β⦁ Cf⋎o β = ⋂⋎o {γ | ∃f⦁ (f, γ) CofinalIn⋎o β}
+■
+
+We can now define the notion of regularity, one of the defining properties of inaccessible cardinals.
+
+ⓈHOLCONST
+│ ⦏Regular⋎o⦎: 'a → BOOL
+├───────────
+│ ∀β⦁ Regular⋎o β ⇔ Cf⋎o β = β
+■
+
+ⓈHOLCONST
+│ ⦏Singular⋎o⦎: 'a → BOOL
+├───────────
+│ ∀β⦁ Singular⋎o β ⇔ ¬ Regular⋎o β
+■
+
+As well as using this in the definition of inaccessibility we want to be able to state that the universe is regular (to get sufficiently generous recursion principles, analogous to global replacement).
+The vocabulary above doesn't really help in stating this global principle, but it is simple enough to state directly.
+We will come to that later.
+
+To get inaccessibilty we need also to express the notion of a strong limit.
+
+ⓈHOLCONST
+│ ⦏Succ⋎o⦎: 'a → 'a
+├───────────
+│ ∀β⦁ Succ⋎o β = ⋂⋎o {γ | β <⋎o γ}
+■
+
+ⓈHOLCONST
+│ ⦏Successor⋎o⦎: 'a → BOOL
+├───────────
+│ ∀β⦁ Successor⋎o β ⇔ ∃γ⦁ γ <⋎o β ∧ β = Succ⋎o γ
+■
+
+ⓈHOLCONST
+│ ⦏Limit⋎o⦎: 'a → BOOL
+├───────────
+│ ∀β⦁ Limit⋎o β ⇔ 0⋎o <⋎o β ∧ ¬ Successor⋎o β
+■
+
+ⓈHOLCONST
+│ ⦏ω⋎o⦎: 'a
+├───────────
+│ ω⋎o = ⋂⋎o {β | Limit⋎o β}
+■
+
+As well as asking for a universe with inaccessibles, it is desirable to have good closure properties for the universe.
+Asserting that ever ordinal is followed by an inaccessible does a lot of that, but does not entail global replacement, so I express the ordinal analogue of replacement as a property of classes of ordinals so that it can be asserted of the whole type of ordinals.
+
+It is then possible to check the definitions by reasoning about the relationship between replacement and regularity.
+
+ⓈHOLCONST
+│ ⦏Rc⦎: 'a ℙ → BOOL
+├───────────
+│ ∀A⦁ Rc A ⇔ ∀β f⦁ β ∈ A
+│      ∧ (∀ν:'a⦁ ν <⋎o β ⇒ f ν ∈ A)
+│      ⇒ ∃ρ⦁ ρ ∈ A ∧ (∀ν⦁ ν <⋎o β ⇒ f ν <⋎o ρ)
+■
+
+=GFT
+=TEX
+
+\ignore{
+=SML
+val Succ⋎o_def = get_spec ⌜Succ⋎o⌝;
+val Successor⋎o_def = get_spec ⌜Successor⋎o⌝;
+val Limit⋎o_def = get_spec ⌜Limit⋎o⌝;
+val ω⋎o_def = get_spec ⌜ω⋎o⌝;
+
+=IGN
+set_goal([], ⌜Limit⋎o ω⋎o ∧ ∀β⦁ Limit⋎o β ⇒ ω⋎o ≤⋎o β⌝);
+a (rewrite_tac[ω⋎o_def]);
+
+=TEX
+}%ignore
+
+ⓈHOLCONST
+│ ⦏StrongLimit⋎o⦎: 'a → BOOL
+├───────────
+│ ∀β⦁ StrongLimit⋎o β ⇔ ∀γ⦁ γ <⋎o β ⇒ ℙ (X⋎o γ) <⋎s X⋎o β
+■
+
+ⓈHOLCONST
+│ ⦏Inaccessible⋎o⦎: 'a → BOOL
+├───────────
+│ ∀β⦁ Inaccessible⋎o β ⇔
+│       	     Regular⋎o β
+│ 		     ∧ StrongLimit⋎o β
+│ 		     ∧ ∃ η⦁ η <⋎o β ∧ Limit⋎o η
+■
+
+\ignore{
+=SML
+val Inaccessible⋎o_def = get_spec ⌜Inaccessible⋎o⌝;
+val CofinalIn⋎o_def = get_spec ⌜$CofinalIn⋎o⌝;
+val Cf⋎o_def = get_spec ⌜Cf⋎o⌝;
+val Regular⋎o_def = get_spec ⌜Regular⋎o⌝;
+val StrongLimit⋎o_def = get_spec ⌜StrongLimit⋎o⌝;
+=IGN
+
+set_goal([], strong_infinity2);
+a (∀_tac);
+a (strip_asm_tac (∀_elim ⌜β⌝ strong_infinity)
+	THEN REPEAT strip_tac
+	THEN asm_fc_tac[]);
+(* *** Goal "1" *** *)
+a (strip_asm_tac (∀_elim ⌜β⌝ strong_infinity));
+a (∃_tac ⌜γ⌝ THEN asm_rewrite_tac
+	[Limit⋎o_def, CofinalIn⋎o_def, Cf⋎o_def,
+	Regular⋎o_def, StrongLimit⋎o_def]);
+a (REPEAT strip_tac THEN asm_fc_tac[]);
+
+set_labelled_goal "2";
+a (spec_nth_asm_tac 2 ⌜f⌝);
+(* *** Goal "2.1" *** *)
+a (∃_tac ⌜ρ⌝ THEN asm_rewrite_tac[]);
+(* *** Goal "2.2" *** *)
+a (∃_tac ⌜ρ⌝ THEN asm_rewrite_tac[]);
+
+=TEX
+}%ignore
+
+The basic idea is to state that every 'a ordinal is less than some (strongly) inaccessible 'a ordinal (also a cardinal), with a little tweak to give, in effect, global replacement  (or its analogue for a theory of 'a ordinals rather than sets).
+Here local replacement is the requirement that each 'a ordinal is less than some regular cardinal, global replacement tells us that the universe is regular.
+The other requirement is that this regular cardinal is a strong limit, i.e. closed under powerset.
+ 
+To validate this principle I could first prove the principal in the set theory in t023, or alternatively in t041 since the 'a ordinals are further developed there.
+That would gives greater confidence in its consistency.
+That it is adequate can be testing in use, or by constructing a set theory from this type of 'a ordinals which satisifies the first principle.
+
+However, without further validation I now proceed to establish that it can be used to justify a convenient recursion principle.
+
+The first step in this is to define a couple of functions using our axiom of infinity.
+
+The first is a function which, given an infinite 'a ordinal, will deliver the least inaccessible 'a ordinal greater than that 'a ordinal, given a finite 'a ordinal it returns $ω$.
+I will call this $Lio$.
+
+\ignore{
+=IGN
+set_goal(∃Lio:'a ordinal → 'a ordinal⦁
+∀β⦁ let γ = Lio β in 
+    β < γ
+    ∧ ∀τ⦁ τ <⋎o γ ⇒ 
+	   ℙ (X⋎o τ) <⋎s X⋎o γ
+	∧ (∀f⦁ (∀ν⦁ ν <⋎o τ ⇒ f ν <⋎o τ)
+		⇒ (∃ρ⦁ ρ <⋎o γ ∧ (∀ν⦁ ν <⋎o τ ⇒ f ν <⋎o ρ)))
+=TEX
+
+
+ ⓈHOLCONST
+│ ⦏G⋎o⦎: 'a → 'a
+ ├──────────
+│ ∀β⦁ G⋎o β = ⋂⋎o {γ | β <⋎o γ ∧ ω⋎o <⋎o γ
+    ∧ ∀τ⦁ τ <⋎o γ ⇒ 
+	   ℙ (X⋎o τ) <⋎s X⋎o γ
+	∧ (∀f⦁ (∀ν⦁ ν <⋎o τ ⇒ f ν <⋎o τ)
+		⇒ (∃ρ⦁ ρ <⋎o γ ∧ (∀ν⦁ ν <⋎o τ ⇒ f ν <⋎o ρ)))}
+ ■
+}%ignore
+
+=GFT
+=TEX
+
+\ignore{
+ =SML
+val G⋎o_def = get_spec ⌜G⋎o⌝;
+
+list_∀_elim [⌜{γ | β <⋎o γ ∧ ω⋎o <⋎o γ
+    ∧ ∀τ⦁ τ <⋎o γ ⇒ 
+	   ℙ (X⋎o τ) <⋎s X⋎o γ
+	∧ (∀f⦁ (∀ν⦁ ν <⋎o τ ⇒ f ν <⋎o τ)
+		⇒ (∃ρ⦁ ρ <⋎o γ ∧ (∀ν⦁ ν <⋎o τ ⇒ f ν <⋎o ρ)))}⌝] ⋂⋎o_def;
+
+=IGN
+set_goal([], ⌜∀β⦁ 
+
+⌝);
+=TEX
+}%ignore
+
+\section{INDUCTIVE DATA TYPES}
+
+\ignore{
+=SML
+force_new_theory "⦏indatat⦎";
+force_new_pc "⦏'indatat⦎";
+merge_pcs ["'savedthm_cs_∃_proof"] "'indatat";
+set_merge_pcs ["rbjmisc","'ordinals", "'indatat"];
+=TEX
+}%ignore
 
 This section provides machinery to support two kinds of inductive data type construction.
 
@@ -2172,6 +2182,30 @@ set_flag ("pp_show_HOL_types", false);
 =TEX
 }%ignore
 
+
+\section{INDUCTIVE DATA TYPES (II)}
+
+\ignore{
+=SML
+open_theory "ordinals";
+force_new_theory "⦏indatat2⦎";
+force_new_pc "⦏'indatat2⦎";
+merge_pcs ["'savedthm_cs_∃_proof"] "'indatat2";
+set_merge_pcs ["rbjmisc","'ordinals", "'indatat2"];
+=TEX
+}%ignore
+
+This is a second approach to the inductive datatype, "inspired" by the perception that the first is too complicated.
+
+I have at this point only the most slender ideas about how that should be done.
+
+They are:
+
+\begin{itemize}
+\item More should be done in the theory of sequences to support the required constructon.
+\item There should be a separate enumeration for each type in mutually defined inductive datatypes, rather than a single enumeration from which separate types will ultimately be defined (though there is no reason why they should not all be the same ordinal type). 
+\end{itemize}
+
 \appendix
 
 \section{PROOFS IN PROGRESS}
@@ -2195,7 +2229,10 @@ GOAL*4 ⌜⌝
 \include{ordinals.th}
 \def\section#1{\Section{#1}
 \addtocounter{ThyNum}{1}\label{Theory\arabic{ThyNum}}}
-\include{idt.th}
+\include{indatat.th}
+\def\section#1{\Section{#1}
+\addtocounter{ThyNum}{1}\label{Theory\arabic{ThyNum}}}
+\include{inaccess.th}
 }%\let
 
 \twocolumn[\section{INDEX}\label{index}]
