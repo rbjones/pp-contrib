@@ -1,7 +1,7 @@
 =TEX
 % $Id: t055.tex $
 
-\documentclass[11pt]{article}
+\documentclass[11pt,a4paper]{article}
 \usepackage{latexsym}
 \usepackage{rbj}
 
@@ -155,7 +155,7 @@ Official Unicode Consortium code chart (PDF)
 U+2A0x	⨀	⨁	⨂	⨃	⨄	⨅	⨆	⨇	⨈	⨉	⨊	⨋	⨌	⨍	⨎	⨏
 U+2A1x	⨐	⨑	⨒	⨓	⨔	⨕	⨖	⨗	⨘	⨙	⨚	⨛	⨜	⨝	⨞	⨟
 U+2A2x	⨠	⨡	⨢	⨣	⨤	⨥	⨦	⨧	⨨	⨩	⨪	⨫	⨬	⨭	⨮	⨯
-U+2A3x	⨰	⨱	⨲	⨳	⨴	⨵	⨶	⨷	⨸	⨹	⨺	⨻	PG	PF	⨾	⨿
+U+2A3x	⨰	⨱	⨲	⨳	⨴	⨵	⨶	⨷	⨸	⨹	⨺	⨻	PG	⨽	⨾	⨿
 U+2A4x	⩀	⩁	⩂	⩃	⩄	⩅	⩆	⩇	⩈	⩉	⩊	⩋	⩌	⩍	⩎	⩏
 U+2A5x	⩐	⩑	⩒	⩓	⩔	⩕	⩖	⩗	⩘	⩙	⩚	⩛	⩜	⩝	⩞	⩟
 U+2A6x	⩠	⩡	⩢	⩣	⩤	⩥	⩦	⩧	⩨	⩩	⩪	⩫	⩬	⩭	⩮	⩯

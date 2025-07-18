@@ -2426,7 +2426,7 @@ The information supplied by the auxiliary function for each 'a ordinal is as fol
 \item the value assigned to this 'a ordinal
 \item the rank of the value coded by this 'a ordinal
 \item the set of new values at this rank yet to be coded
-\item a well-ordering of the not yet coded values at this rank
+\item an initial well-ordering of the not yet coded values at this rank
 \item if this is a valid code then T else F (this will be false if all possible values have already been assigned a code)
 \end{enumerate}
 
@@ -2464,12 +2464,19 @@ TWo: 'b → 'b → BOOL;
 TValid: BOOL
 ■
 
+ⓈHOLCONST
+│ ⦏5TUP_F⦎: ('a, 'b)5TUP
+├───────────
+│ 5TUP_F = Mk5TUP (εx:'b⦁T) (εx:'a ordinal⦁T) (εx:'b ℙ⦁T) (εx:'b → 'b → BOOL⦁T) F
+■
+
+
 The ranks which have been partly or wholly coded can be extracted from a partial enumeration as follows:
 
 ⓈHOLCONST
 │ ⦏Ranks⦎: (('a ordinal → ('a, 'b)5TUP) × 'a ordinal) → 'a ordinal ℙ
 ├───────────
-│ ∀f x⦁ Ranks (f, x) = {or | ∃z⦁ TRank (f z) = or}
+│ ∀f x⦁ Ranks (f, x) = {or | ∃z⦁ z <⋎o x ∧ TRank (f z) = or}
 ■
 
 The first rank which has not yet been partially or wholly coded is the
@@ -2515,8 +2522,21 @@ told the rank.
 │	else RankRes1 ((f, x), SRank (f, x))
 ■
 
+We also need to extract the initial well-ordering of the new values at the current rank.
+The following function only works if the current rank is not exhausted, in which case there will be at least one previous ordinal mapping to an element of that rank, and the current rank will be the supremum of previous ranks.
+All 5TUPs at that rank will have the same initial well-ordering relation (though the field will vary) so we can get it using the choice function on the 5TUPs at the supremum rank.
+
+ⓈHOLCONST
+│ ⦏ResOrder⦎: (('a ordinal → ('a, 'b)5TUP) × 'a ordinal) → ('b → ('b → BOOL)) 
+├───────────
+│ ∀f x⦁ ResOrder (f, x) = εwo⦁ ∃y⦁
+│      		y <⋎o x
+│      ∧	TRank (f y) = SRank (f, x)
+│      ∧	wo = TWo (f y)
+■
+
 If there are no values to be coded then we need to step up to the next rank.
-To do this we collect together all the values so far coded, apply the constructor function to determine what can be constructed from them, and remove from the reaults anything which has already been coded.
+To do this we collect together all the values so far coded, apply the constructor function to determine what can be constructed from them, and remove from the results anything which has already been coded.
 
 The following function obtains the set of values already coded.
 
@@ -2549,31 +2569,41 @@ The prior enumeration of 5TUPs, the new rank, and the function for computing the
 │ ∀(f:'a ordinal → ('a, 'b)5TUP) x m⦁
 │  Next4T f x m =
 │	if ∃z:'a ordinal⦁ z <⋎o x ∧ ¬ TValid(f z)
-│	then Mk5TUP (εx:'b⦁T) (εx:'a ordinal⦁T) (εx:'b ℙ⦁T)
-					(εx:'b → 'b → BOOL⦁T) F
-│	else	let res = RankRes2 (f, x)
-		in	if res = {}
-			then	let nr = SSRank (f,x)
-				and nvs = (NewValFunc m) (f, x)
-				in
-	if nvs = {}
-	then Mk5TUP (εx:'b⦁T) (εx:'a ordinal⦁T) (εx:'b ℙ⦁T)
-					(εx:'b → 'b → BOOL⦁T) F
-	else	let nv = εx:'b⦁ x ∈ nvs (* need to chose least *)
-		in	Mk5TUP nv nr (nvs \ {nv}) (εx:'b → 'b → BOOL⦁T) T
-
-			else	let nv = εx:'b⦁ x ∈ res
-				in Mk5TUP nv (SRank (f, x)) (res \ {nv}) (εx:'b → 'b → BOOL⦁T) T
+	(* the enumeration has aleady completed *)
+│	then 5TUP_F
+	(* x is outside the domain of the enumeration *)
+│	else let res = RankRes2 (f, x)
+	(* res = remaining items to be enumerated at the current rank *)
+	     in	if res = {}
+		(* if there are none *)
+		then let nr = SSRank (f,x)
+			(* nr = the next rank *)
+		     and nvs = (NewValFunc m) (f, x)
+			(* nvs = values constructable from previous ranks (dropping duplicates) *)
+		     in if nvs = {}
+			   (* if there are none *)
+		        then 5TUP_F
+		     	   (* x is outside domain the enumeration *)
+		        else let nvswo = εx⦁ InitialStrictWellOrdering(nvs, x)
+		     	         (* initial well-order the new values *)
+			     in let nv = Minr (nvs, nvswo) nvs
+				(* nv = the first of the  new values *)
+			     in Mk5TUP nv nr (nvs \ {nv}) nvswo T
+				(* and map the current index to it *)
+		else let nvswo = ResOrder (f, x)
+			(* get the initial well-ordering if the remaining values *)
+		     in let nv = Minr (res, nvswo) res
+			(* chose the lowest *)
+		     in Mk5TUP nv (SRank (f, x)) (res \ {nv}) nvswo T
 ■
-
 
 Now we use the above function in a definition by transfinite recursion.
 
 =SML
 push_merge_pcs ["ordcard0", "'ordcard", "'ordcard-rec1"];
 
-
-set_goal([], ⌜∃Map2Coding:((('a ordinal → ('a, 'b)5TUP) × 'a ordinal) → 'b SET) → ('a ordinal → ('a, 'b)5TUP)⦁
+set_goal([], ⌜∃Map2Coding:((('a ordinal → ('a, 'b)5TUP) × 'a ordinal) → 'b SET)
+	     			→ ('a ordinal → ('a, 'b)5TUP)⦁
 		∀(m:((('a ordinal → ('a, 'b)5TUP) × 'a ordinal) → 'b SET)) x⦁
        Map2Coding m x = Next4T (x ◁⋎o (Map2Coding m)) x m⌝);
 a (prove_∃_tac);
@@ -2597,14 +2627,14 @@ pop_pc();
 The following function extracts the projection function from the result of this operation.
 
 ⓈHOLCONST
-│ ⦏Coding2Projection⦎: ('a ordinal → ('a, 'b)5TUP) → ('a ordinal → 'b)
+│ ⦏Map2Projection⦎: ((('a ordinal → ('a, 'b)5TUP) × 'a ordinal)  → 'b SET) → ('a ordinal → 'b)
 ├───────────
-│ ∀c x⦁  Coding2Projection c x = TValue (c x)
+│ ∀m x⦁  Map2Projection m x = TValue (Map2Coding m x)
 ■
 
 \subsection{Some Theorems}
 
-The development of the theory here is somewhat ad. hoc., driven by the needs of the examples which follow.
+The development of the theory here is somewhat \emph{ad hoc}, driven by the needs of the examples which follow.
 
 A general pattern should emerge which is similar to the kinds of results noramlly obtained when recursive datatype are introduced, with certain modifications arising from the infinitary nature of the facility.
 
@@ -2614,14 +2644,21 @@ In the simplest infinitary example, which is where we start here (set theory), t
 
 In that case the key results required are firstly that the projection is a bijection, and a principal of induction on the rank of the construction (or on an ordering correponding to the order of the ordinal codes).
 
-
 \subsubsection{That Projections are Bijections}
-
-
 
 An elementary requirement is that the projection function is a bijection over its domain of well-definedness (which will in the examples usually be the whole type of ordinals, though if the constructions are used for more ordinary datatypes will not always be the case).
 
+=GFT
+Proj_OneOne_thm = ⊢? ∀m x y⦁ Map2Projection m x = Map2Projection m y ⇒ x = y
+=SML
+new_conjecture (["Proj_OneOne"], ⌜∀m x y⦁ Map2Projection m x = Map2Projection m y ⇒ x = y⌝);
 
+set_goal([], ⌜∀m x y⦁ y <⋎o x ∧ Map2Projection m x = Map2Projection m y ⇒ x = y⌝);
+a (∀_tac THEN ∀_tac THEN rewrite_tac (map get_spec [⌜Map2Projection⌝, ⌜Map2Coding⌝]));
+a (ord_induction_tac ⌜x⌝);
+a (REPEAT strip_tac);
+a (asm_fc_tac[]);
+=TEX
 
 
 \subsection{Set Theory from Ordinals}
@@ -2660,7 +2697,7 @@ declare_infix(230,"∈⋎o");
 ⓈHOLCONST
 │ $⦏∈⋎o⦎: 'a ordinal → 'a ordinal → BOOL
 ├───────────
-│ ∀x y⦁  x ∈⋎o y ⇔ x ∈ (Coding2Projection (Map2Coding SetsMap) y)
+│ ∀x y⦁  x ∈⋎o y ⇔ x ∈ (Map2Projection SetsMap y)
 ■
 
 \subsubsection{Extensionality}
@@ -2668,7 +2705,6 @@ declare_infix(230,"∈⋎o");
 The first thing to prove is extensionality.
 Extensionality is the consequence in this simple example of the general feature of this kind of construction, that the projection function is a bijection (hence no two ordinals code the same set of ordinals.
 So before presenting the extensionality theorem I step back to prove that the codings are all bijections (over their defined part).
-
 
 \appendix
 

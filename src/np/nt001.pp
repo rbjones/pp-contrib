@@ -1,7 +1,7 @@
 ﻿% $Id: nt001.tex $ﬁ
-% bibref{rbjnp001} pdfname{np001}
+% bibref{rbjnt001} pdfname{nt001}
 =TEX
-\documentclass[10pt,titlepage]{article}
+\documentclass[11pt,titlepage]{article}
 \usepackage{makeidx}
 \newcommand{\ignore}[1]{}
 \usepackage{graphicx}
@@ -18,6 +18,8 @@
 \usepackage{enumerate}
 \usepackage{longtable}
 \usepackage{url}
+\usepackage{amsmath, amssymb}
+\usepackage[utf8]{inputenc} % Enables Unicode input
 \newcommand{\hreg}[2]{\href{#1}{#2}\footnote{\url{#1}}}
 \makeindex
 
@@ -61,6 +63,22 @@
 \           
 
 \section{Introduction}
+
+This essay belongs to a period of tumult in my intellectual endeavours, and aims to contribute to a reformulation of my aspirations.
+My inclinations straddle the relationship between Philosophy and Engineering, spreading across some of the other disciplines which might be thought to lie between them, such as logic, mathematics, and the sciences.
+
+The project to which I aim to contribute goes top to bottom across that spectrum, though which way is up is debateable.
+From my Engineering perspective, the philosophy is an aspect of the highest and earliest stages in the systems architevtural design, which fits it into the unworkable ``waterfall' model of systems development.
+
+From a philosophical persepective, philosophy is concerned with foundations, most importantly the foundations of epistemology. but inextricably intertwined with philosophy of language, logic, and elements of metaphysics.
+Everything else is superstructure.
+
+What is it that we are engineering?
+Two things.
+A distributed shared repository of knowledge, with aspirations to support declarative knowledge of all kinds (subject to the particular conception of `declarative' knowledge which formed the aspiration).
+And \emph{intelligence}, a pure conception of intelligence almost diametrically opposed to the model provided by LLMs.
+
+\section{Deduction and Intelligence}
 
 Once upon a time, the automation of formal deduction was seen by many as a way to realise machine intelligence.
 A great deal of water has flown under the bridge, including a tug of war between that strategy (and related approaches that I here speak of as {\it focal}), and alternative strategies (which I will call {\it diffuse}) seeking to realise intelligence by methods thought to be  aligned to how the human brain, as a network of neurons, effects its own intelligence.
@@ -122,7 +140,6 @@ In the first instance then, prototyping will begin with work on the formal specf
 
 This first stage in prototyping will be primarily exploting what it takes to bootstrap a reflexive kernel for the new technology, differing from the existing ProofPower system in the following ways.
 
-
 \item Detached theory heirarchy.
 
 The theory heirarchy will no longer by closely coupled with the logical kernel, and I will probably be talking of it as a \emph{knowledge base} or a \emph{context heirarchy}.
@@ -168,8 +185,6 @@ The first is that the rules are defined as relationships rather than as function
 
 
 \end{itemize}
-
-
 
 \section{More Compact Attempt}
 
@@ -235,13 +250,53 @@ It was intended that ProofPower would support Z by embedding into HOL.
 Additional investments were made to enable the application of ProofPower to safety critical systems involving the verification of programs in SPARK Ada.
 
 With the advent of AI it seems likely that machine supported formal methods will be much more broadly applicable, and the target for the new generation which I am exploring here involves the use of this logical system as an abstract substrate for the representation of all declarative knowledge.
-A general transition from the use of databasess to a logic based knowledge base would enable a transition from {\it data processing} which produces results of uncertain significance, to {\it deduction} yielding clear declarative content, in the context of abstract models of the physical world.
-We are talking here about a paradign shift from a computational paradigm to a deductive paradigm which gives artificial intelligence a much firmer grip on truth.
+A general transition from databases (of various kinds) to the use of a distributed logic based knowledge base would enable a transition from {\it data processing} which produces results of uncertain significance, to {\it deduction} yielding clear declarative content, in the context of abstract models of the physical world.
+This is would represent a paradign shift from a computational paradigm to a deductive paradigm which would gives artificial intelligence a much firmer grip on truth, and exploit focus in the intelligent exploitation of deductive methods.
+
+This is swimming aginst the present tide, in which the dominant trend is explicitly the realisation of general intelligence by progressing current methods based around LLMs, to the representation of knowledge in neural nets, and includes making a merit of development using AI which is productive but unreliable.
+These methods typically abjure focus, and involve applying heavyweight models rather than building special lightweight structures for deep thinking in narrow domains.
+There is a subsidiary contemporary trend which flows from the successes of Google Deepmind's Alpha-zero technology and a variety of hybrid applications building on those methods.
+These major on the adoption of neural nets not for the command of language, but for the establishment of good heuristics for Monte Carlo Tree Search in perfect information spaces which can be explored independently by the learning system without need to observe large amounts of exemplary data.
+Though these methods are being explored sucessfuly by DeepMind and others, they are generally domain specific applications, and I am not aware of any success in applying such techniques more broadly.
+This proposal applied the techniques to a medium in which any and all these perfect information spaces can be precisely defined, and therefore allows them to be realised in a general intelligence rather than to a specific narrow application.
 
 The full nature and scope of such a deductive paradigm is beyond the scope of the present project, which will focus on more tangible purposes.
 
 So I do envisage this as supporting a widely distributed knowledge base for declarative knowledge as a context for deductive intelligence.
 
+\section{Kernel Re-Engineering}
+
+While still ruminating about the structure of the whole proposal, I need to be doing something practical to generate more tangible progress than English prose.
+
+For me the most interesting part of the project is possibly the most controversial and likely the most difficult to pull off.
+This is the re-engineering of the logical Kernel to support ``reflection'', i.e. to prioritise the ability of the proof technology to understand, to incrementally advance, and perhaps ultimately re-conceive and redesign itself.
+
+This I propose to progress in the first instance by rewriting the formal specifications of HOL (in HOL) (a solid version of which is provided by Rob Arthan in \cite{arthan1991formal,arthanspc001,arthanspc002,arthanspc003,arthanspc004,arthanspc005}).
+The aims of this rewrite are as follows:
+
+\begin{itemize}
+\item Make it more ``constructive''.
+
+The existing formal specification notes difficulties arising in a more ``constructive'' approach to presenting the specifications, and because of these difficulties defines inference rules, which are intended to be implemented as functions, as relations.
+For this project, the formal specification must be the implementation, so that it is possible using the specification to reason about the system, to specify and verify derived rules if inference and subsequently execute those derived rules in proving theorems.
+i.e. we will be using HOL as a programming language, and the kernel will include the means to execute those programs.
+It may be that it will prove worthwhile to embedd a convenient programming language into HOL for this purpose, but in the first instance I will be looking to avoid the extra complexity that would introduce into the kernel by sticking to constructive use of bare HOL.
+
+As well as rewriting the specifications of HOL, I will be aiming to restructure the theory heirarchy so that the features necessary or specification of and reasoning about HOL programs, and about the whole system, are prioritised.
+
+\item Make it more abstract
+
+There is not much in this, but the intention is that the logical kernel will have nothing to do with concrete syntax or the way in which the logical contexts in which it operates are stored in physical media.
+This is because the abstract syntax of HOL is advocated as a substrate for any declarative language, most of which one may expect to be analogous to shallow embeddings of languages more congenial for users, or less systematically related via LLMs or other AI layers (which are beyond our present scope).
+
+\item Basic Theory Reorganisation
+
+In the structuring of the new kernel the ability to work with inductive structures is prioritised and general mechanisms for this will be introduced rather than, for example, using strings to represent types and terms.
+Since this is prerequisite to even beginning formal specification of the HOL language, it is our first task, and I intende to begin by defining well-founded relations, proving appropriate recursion theorems, proving that all types have initial strict well-orderings, introducing polymorphic strong infinity axiom(s?), and providing the theory necessary for the construction recursive data-types (whose first applications will be to HOL types and terms).
+
+\item
+
+\end{itemize}
 \appendix
 
 \section{Project Synthesis and Roadmap}
@@ -337,9 +392,6 @@ The primary application domain is engineering design and build, where the system
 
 This represents a paradigm shift from computational to deductive approaches, providing artificial intelligence with a much firmer grip on truth while enabling unprecedented levels of formal verification and self-improvement.
 
-``
-
-
 %\listoffigures
 
 \pagebreak
@@ -347,7 +399,7 @@ This represents a paradigm shift from computational to deductive approaches, pro
 \phantomsection
 \addcontentsline{toc}{section}{Bibliography}
 \bibliographystyle{rbjfmu}
-\bibliography{rbj}
+\bibliography{rbj2}
 
 %\addcontentsline{toc}{section}{Index}\label{index}
 %{\twocolumn[]

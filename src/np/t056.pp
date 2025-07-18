@@ -11,23 +11,24 @@ Formal Text Brackets: ⌜ ⌝ ⓣ ⓜ ⓩ Ⓢ ■ ┌ └ ╒ ├
 Padding symbols	│ ─ ═  Index Brackets ⦏ ⦎
 Bracketing symbols: ⟨ ⟩ ⟦ ⟧ ⦇ ⦈
 Subscription and Superscription: ⋎ ⋏ ↗ ↘ ↕ Underlining: ⨽ ⨼
-Relation, Sequence and Bag Symbols:  ⩥ ▷ ⩤ ◁ ⁀ ↾ ↿ ⊕ ⊎ ⨾ ∘
+Relation, Sequence and Bag Symbols:  ⩥ ▷ ⩤ ◁ ⁀ ↾ ↿ ⊕ ⊎ ⨾ ∘ ⨡
 Miscellaneous: ⊢ ⦂ ≜ ⊥ ⊖
 
 set_flag("pp_show_HOL_types", true);
 =TEX
 \documentclass[11pt,a4paper]{article}
 \usepackage{latexsym}
-%\usepackage{ProofPower}
 \usepackage{rbj}
+
+\usepackage{fontspec}
+\setmainfont{ProofPowerSerif}
+
 \ftlinepenalty=9999
 \usepackage{A4}
 
-\usepackage{fontspec}
-\setmainfont[]{ProofPowerSerif}
-
 \def\ExpName{\mbox{{\sf exp}}}
 \def\Exp#1{\ExpName(#1)}
+
 \tabstop=0.4in
 \newcommand{\ignore}[1]{}
 
@@ -117,11 +118,11 @@ Indefinite iteration is expected ultimately to exhaust all possible construction
 This application area is addressed en-passant and to whatever extent it contributes to the second  application.
 
 Similar methods may also be applied to the estabishment of foundational ontologies and of logical foundation systems.
-In this application the constructors may be guaranteed to raise cardinality, and will therefor have no fixed point.
+In this application the constructors may be guaranteed to raise cardinality, and will therefore have no fixed point.
 The resulting abstract onology will have the same cardinality as the ordinal type over which the inductive definition is performed, and the ontology will not be unconditionally closed under the constructions.
 The simplest example is the construction of an ontology of pure well-founded set by adding at each stage all the elements of the powerset of the preceding ontology.
-In this case the failure of closure in the resulting ontology is shown by the limitation of abstraction to separation, and to secure a rich enough ontology, such as would be obtained in an axiomatic set theory via the axion of replacement (or large cardinal axioms), an order type of large cardinality is required for our ordinals.
-Though these application provide my primary motivation, any material particular to them which depends upon principles like replacement, will be the subject matter of a subsequent document (except insofar as it can be addressed conditionally)
+In this case the failure of closure in the resulting ontology is shown by the limitation of abstraction to separation, To secure a rich enough ontology, such as would be obtained in an axiomatic set theory via the axiom of replacement (or large cardinal axioms), an order type of large cardinality is required for our ordinals.
+Though these application provide my primary motivation, any material particular to them which depends upon principles like replacement, will be the subject matter of a subsequent document (except insofar as it can be addressed conditionally).
 
 In both of these applications, the ordinals enumerate the entities created, which are then represented by their place in the enumeration, the combined constructor (a single function with a disjoin union domain encapsulating all the individual constructors) is the inverse of this enumerating function defined by induction over the relevant type of ordinals.
 The enumeration also supports inductive reasoning about these constructions and recursive definition of functions over them.
@@ -612,6 +613,12 @@ val ≤⋎o_ext_thm = save_pop_thm "≤⋎o_ext_thm";
 ⦏lt⋎o_induction_thm⦎ = ⊢ ∀ p⦁ (∀ x⦁ (∀ y⦁ y <⋎o x ⇒ p y) ⇒ p x) ⇒ (∀ x⦁ p x)
 =TEX
 
+We also introduce induction tacticals and tactics:
+=GFT
+⦏LT⋎O_INDUCTION_T⦎: (THM -> TACTIC) -> TERM -> TACTIC
+⦏lt⋎o_induction_tac⦎: TERM -> TACTIC
+=TEX
+
 \ignore{
 =SML
 val lt⋎o_well_founded_thm = save_thm ("lt⋎o_well_founded_thm",
@@ -625,6 +632,9 @@ val lt⋎o_well_founded_thm3 = save_thm ("lt⋎o_well_founded_thm3",
 
 val lt⋎o_induction_thm = save_thm ("lt⋎o_induction_thm",
      ⇒_elim (∀_elim ⌜$<⋎o⌝ u_iswo_induction_thm) lt⋎o_def);
+
+val LT⋎O_INDUCTION_T = GEN_INDUCTION_T lt⋎o_induction_thm;
+val lt⋎o_induction_tac = gen_induction_tac lt⋎o_induction_thm;
 =TEX
 }%ignore
 
@@ -728,7 +738,7 @@ A useful principle for reasoning about the 'a ordinals is the following analogue
 =TEX
 
 We will later make use of quasi extensional characterisations of operations over 'a ordinals, in which an 'a ordinal expression is characterised by a statement of the conditions under which 'a ordinals are less than the value of the expression.
-This facilitates proofs about 'a ordinals in which the complexity is on the right of an inequality, or in which such can be obtained by the extesionality principle above.
+This facilitates proofs about 'a ordinals in which the complexity is on the right of an inequality, or in which such can be obtained by the extensionality principle above.
 
 This leaves an awkwardness where our goal has an expression on the left of an inequality which the following rule is intended to ameliorate.
 
@@ -1437,10 +1447,24 @@ Typically the limit will be formed of a set which is the image of a set under a 
 │	∀f s⦁ LimPenIm⋎u f s = LimitPen⋎q (Image⋎u (f,s)) 
 ■
 
+\subsection{Relations to Enumerations}
+
+We have theorems which give us the existence of various kinds of orderings, e.g. strict initial well-orderings, but not enumerations, so lets fix that with a function which turns any well-order into an enumeration.
+
+We have the usual problem with cardinalities.
+
+\ignore{
+ ⓈHOLCONST
+│ ⦏Wo2Enum⋎q⦎: ('a → 'a → BOOL) →  ('b, 'a )POTEN
+ ├───────────
+│	∀r x⦁ Wo2Enum⋎q r x = LimitPenIm⋎u (λy⦁ Wo2Enum⋎q r y)
+ ■
+}%ignore
+
 \ignore{
 =SML
 val LimPenIm⋎u_def = get_spec ⌜LimPenIm⋎u⌝;
-val LimitPen⋎q⦎_def = get_spec ⌜LimitPen⋎q⦎⌝;
+val LimitPen⋎q_def = get_spec ⌜LimitPen⋎q⦎⌝;
 val LimitPen⋎p_def = get_spec ⌜LimitPen⋎p⌝;
 val LimitOrd⋎q_def = get_spec ⌜LimitOrd⋎q⌝;
 val LimitOrd⋎p_def = get_spec ⌜LimitOrd⋎p⌝;
@@ -1503,13 +1527,6 @@ To make this conspicuous we can rewrite the definition, first:
 =TEX
 
 This first step overcomes the first problem (the dependence on establishing that the formula is `downward closed', the set in the second formulation does not need to be downward closed).
-The smaller values become irrelevant, and this could be simplified to:
-
-=GFT
-	∀β γ⦁ β +⋎o γ = SSup⋎o ({η | ∃ρ⦁ ρ <⋎o γ ∧ η = β +⋎o ρ} ∪ {β})
-=TEX
-
-(Well it was simpler till I realised I had to add the $⌜∪ {β}⌝$)
 
 A further step allows the well-foundedness of the recursion to be made more obvious.
 
@@ -1813,6 +1830,32 @@ set_goal([], ⌜∀ f s⦁ LimitPenIm⋎u (s ◁⋎u f) s = LimitPenIm⋎u f s�
 =TEX
 }%ignore
 
+\subsection{Well-Orderings}
+
+It is also possible to represent both types of enumeration by the well-ordering (relationship) which they embody, and the distinction between total and partial enumerations does not then complicate the type since the distinction is simply whether the field of the relation is the whole type.
+Its not at all clear that this is not a better way to go for most of the hard work, morphing over to an enumeration for the projection function only after the fixed point has been established.
+I'll do this section as if it were a fresh start on the problem (preliminaries to support for inductive data types).
+
+
+
+
+
+\subsection(Enumerating Well-Orderings)
+
+In defining a projection function for an inductive datatype, the enumeration proceeds by rank, and the result is the product of enumerations of the values at each rank.
+The product relation is an easily defined well-ordering and therefore should be converted into an isomorphic enumeration.
+For this purpose we define here the function which enumerates the field of a well-ordereding.
+Note that the domain of the enumeration may be but need not be the the same type as the field of the well-ordering, in either case interpreted as a strict initial ordinal.
+Because this is an initial ordinal, it is not certain that it will suffice to capture an order over the same type which is not initial.
+
+\ignore{
+ ⓈHOLCONST
+│ $⦏wo_enum⦎: ('a → ('a → BOOL)) → ('b  → 'a)
+ ├───────────
+│ ∀r⦁ wo_enum r x = SSup⋎o(ran (x ◁u wo_enum))
+ ■
+}%ignore
+
 \section{DEFINING INACCESSIBILITY}
 
 \ignore{
@@ -1911,7 +1954,7 @@ To get inaccessibilty we need also to express the notion of a strong limit.
 ■
 
 As well as asking for a universe with inaccessibles, it is desirable to have good closure properties for the universe.
-Asserting that ever ordinal is followed by an inaccessible does a lot of that, but does not entail global replacement, so I express the ordinal analogue of replacement as a property of classes of ordinals so that it can be asserted of the whole type of ordinals.
+Asserting that every ordinal is followed by an inaccessible does a lot of that, but does not entail global replacement, so I express the ordinal analogue of replacement as a property of classes of ordinals so that it can be asserted of the whole type of ordinals.
 
 It is then possible to check the definitions by reasoning about the relationship between replacement and regularity.
 
@@ -2073,7 +2116,7 @@ For the second, the simplest construction is to use the power set to create a se
 \subsection{The Projection Iterator}
 
 We required a function to be provided which given a set of representatives (in fact an initial segment, or the whole, of some ordinal type) identify the things which can be constructed from them.
-This is done by exhibiting the constructions which yield the particular representative, so the map from a represetative to its manner of construction is the projection from the required abstract data types.
+This is done by exhibiting the constructions which yield the particular representative, so the map from a representative to its manner of construction is the projection from the required abstract data types.
 
 An inductive data type is generated from the empty set by iterating certain defined methods of constructing new entities of the inductively defined types from the entities already constructed (getting off the ground by the use of some constructors which require no existing members of those types).
 This is defined as a map which, given some existing set of representatives of the types, delivers the ways in which new values can be constructed, i.e. the constructors to be used and the values to which those constructors are to be applied.
@@ -2083,7 +2126,7 @@ The iteration of this process of construction therefore cumulatively defines a c
 
 At each step in this process the set of representatives grows larger until perhaps there are no new values of the types to be created, and we may say that a fixed point has been reached over which the constructors are closed.
 
-This does not always happen, in some cases, notably where the constructors always increase the cardinality of the representatives (e.g. when constructing the cumulative heirarchy in well-founded set theories) amd in that case the process terminates when the type of representatives is exhausted and the result is still not closed under the constructions.
+This does not always happen, in some cases, notably where the constructors always increase the cardinality of the representatives (e.g. when constructing the cumulative heirarchy in well-founded set theories) and in that case the process terminates when the type of representatives is exhausted and the result is still not closed under the constructions.
 
 This composite projection function is a map from a type of ordinals, and is constructed by sucessively allocating to the ordinals constructions, so that the projection function is in effect an enumeration of the ways in which values of the new types can be constructed.
 So we are here concerned with how such enumerations can be defined, and of course with inductive definitions of such enumerations.

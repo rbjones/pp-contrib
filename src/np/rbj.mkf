@@ -41,7 +41,7 @@ default:
 vars:
 	echo $(HOLTEXS1)
 	echo $(HOLDBNAME)
-	echo $(HOLDBNAME)
+	echo $(SPCDIR)
 
 ######################################################################
 #
@@ -50,6 +50,7 @@ vars:
 ######################################################################
 
 PPHOME=$(shell echo $${PPHOME:-/usr/local/pp})
+SPCDIR=$(PPHOME)/src/hol
 PPCHARSET=utf8
 PPSVF=utf8svf
 PRODNAME=rbj
@@ -81,8 +82,10 @@ HOLPPS1= t000.pp \
 	t015.pp t016.pp t017.pp t018.pp t019.pp t020.pp t021.pp \
 	t022.pp t023.pp t024.pp t025.pp t026.pp t027.pp t031.pp \
 	t033.pp t034.pp t042.pp t043.pp t051.pp t052.pp t053.pp \
-	t054.pp t056.pp t057.pp t058.pp\
-	nt001.pp nt002.pp
+	t054.pp t056.pp t057.pp t058.pp \
+	nt001.pp nt002.pp \
+# nt004.pp \
+	spc001.pp spc003.pp
 
 # Three file ppsvf cases 
 
@@ -121,7 +124,8 @@ TTEX= \
 	t056.tex t057.tex t058.tex
 	
 NTEX= \
-      nt001.tex
+      nt001.tex nt002.tex \
+# nt004.tex
 
 ATEXS=$(HOLPPS2:.pp=a.tex) $(HOLPPS3:.pp=a.tex)
 ZTEXS=$(HOLPPS2:.pp=z.tex) $(HOLPPS3:.pp=z.tex)
@@ -161,9 +165,14 @@ PACKINGLIST= $(SMLPPS) $(ATEXS) $(ZTEXS) $(OTHERPPS) rbj.bib rbj2.bib rbj.mkf rb
 $(SMLINCFILES): %.sml: %.bsml
 	cp $*.bsml $*.sml
 
+HOLSPCCPY=spc001.pp spc003.pp
+
+$(HOLSPCCPY): %.pp : $(SPCDIR)/%.pp
+	      cp $(SPCDIR)/$*.pp .
+
 DISTPACKINGLIST=$(PACKINGLIST) README.txt
 
-# Thories and Documents ##############################################
+# Theories and Documents ##############################################
 #
 # This set of dependencies tells which theories are created by (and
 # listed in) which documents, nd conversely, which tex files depend on
@@ -171,7 +180,7 @@ DISTPACKINGLIST=$(PACKINGLIST) README.txt
 #
 ######################################################################
 
-t000.pdf: t000abs.tex
+t000.pdf: t000abs.tex doc_theories.tex
 
 t001.pdf: t001a.th.tex t001b.th.tex
 t001a.th.pp t001b.th.pp: t001.ldd
@@ -313,6 +322,9 @@ arch.th.pp: t057.ldd
 t058.pdf: O.th.tex
 O.th.pp: t058.ldd
 
+nt004.pdf: spc003n.th.tex
+spc003n.th.tex: nt004.ldd
+
 $(IPDFS): %.pdf: %.sml
 
 ######################################################################
@@ -336,7 +348,6 @@ t029.ldd: t006.ldd
 t037.ldd: t006.ldd
 t002.ldd: t003.ldd
 t004.ldd: t009.ldd
-t040.ldd: t039.ldd
 t017.ldd: t004.ldd t006.ldd t039.ldd
 t023.ldd t042.ldd: t005.ldd t006.ldd t009.ldd
 t021.ldd: t005.ldd t009.ldd t023.ldd
@@ -345,8 +356,9 @@ t008.ldd: t004.ldd t007.ldd
 t019.ldd: t004.ldd t007.ldd
 t018.ldd: t007.ldd t019.ldd
 t025.ldd: t007.ldd t023.ldd
+t040.ldd: t007.ldd t009.ldd t039.ldd
 t043.ldd: t025.ldd t042.ldd
-t044.ldd: t043.ldd
+t044.ldd: t043.ldd t039.ldd
 t045.ldd: t006.ldd
 t046.ldd: t045.ldd
 t047.ldd: t006.ldd
@@ -371,7 +383,11 @@ t056.ldd: t009.ldd t044.ldd
 t057.ldd: t009.ldd
 t058.ldd: t056.ldd
 
+spc001.ldd:
+spc003.ldd:spc001.ldd
+
 nt001.ldd:
+nt004.ldd:spc003.ldd
 
 # some variables and rules concerning document preparation
 

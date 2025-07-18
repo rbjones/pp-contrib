@@ -2265,7 +2265,7 @@ save_pop_thm "well_founded_descending_sequence_thm"
 =TEX
 }%ignore
 
-A relation is well-founded iff. it enjoys the Noetherian(?) induction principle:
+A relation is well-founded iff. it enjoys the Noetherian induction principle:
 
 =GFT
 ⦏well_founded_induction_thm⦎ = ⊢ ∀X $<<⦁
@@ -2512,7 +2512,7 @@ When reasoning using well-founded induction a primitive induction principle can 
 In preparation for proving this theorem it is convenient to have a more general notion of inclusion of relations than that of section \ref{Lemmas about Subsets of Ordered Sets}.
 This is helpful because a relation is a subrelation of its transitive closure, not a restriction of it to a smaller field.
 This suffices to establish that it is well founded if its transitive closure is.
-One might as well get it via the general result that subrelations of well-founded relation is well-founded, but it can't be done using a subrel theorem of the kind presented in section \ref{Lemmas about Subsets of Ordered Sets} earlier.
+One might as well get it via the general result that subrelations of a well-founded relation are well-founded, but it can't be done using a subrel theorem of the kind presented in section \ref{Lemmas about Subsets of Ordered Sets} earlier.
 
 =SML
 declare_infix (300, "⊆⋎r");
@@ -3287,6 +3287,9 @@ declare_infix(400, "⟨◁");
 
 =GFT
 ⦏⟨◁_fc_thm⦎ = ⊢ ∀ y x $<< f⦁ y << x ⇒ ((x, $<<) ⟨◁ f) y = f y
+
+⦏tf_rec_thm2⦎ = ∀$<<⦁ WellFounded(Universe, $<<) ⇒
+	∀af⦁ ∃f⦁ ∀x⦁ f x = af ((x, $<<) ⟨◁ f) x
 =TEX
 
 \ignore{

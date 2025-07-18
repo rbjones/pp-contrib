@@ -4,14 +4,17 @@ $Id: t000.doc,v 1.15 2011/04/25 19:51:22 rbj Exp $
 \documentclass[11pt,a4paper]{article}
 \usepackage{latexsym}
 \usepackage{ProofPower}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
 \ftlinepenalty=9999
 \usepackage{A4}
-\def\N{\mathbb{N}}
-\def\D{\mathbb{D}}
-\def\B{\mathbb{B}}
-\def\R{\mathbb{R}}
-\def\Z{\mathbb{Z}}
-\def\Q{\mathbb{Q}}
+%\def\N{\mathbb{N}}
+%\def\D{\mathbb{D}}
+%\def\B{\mathbb{B}}
+%\def\R{\mathbb{R}}
+%\def\Z{\mathbb{Z}}
+%\def\Q{\mathbb{Q}}
 
 \def\ExpName{\mbox{{\sf exp}}}
 \def\Exp#1{\ExpName(#1)}
@@ -35,6 +38,7 @@ $Id: t000.doc,v 1.15 2011/04/25 19:51:22 rbj Exp $
 A description of the problems I am working on and an index to the documents in which that work is progressing.
 \end{abstract}
 \vfill
+
 \begin{centering}
 {\footnotesize
 
@@ -137,8 +141,6 @@ There is a purpose which will gradually refine this conception of the coverage.
 This formal book is to provide substance behind a plain prose articulation of a philosophy of ``metaphysical positivism'', it will exemplify methods articulated in that book \cite{rbjt029}, and will provide technical backing for some of the claims informally presented in that book.
 
 }%ignore
-
-
 
 \subsection{Earlier Work}
 
@@ -267,16 +269,18 @@ I also have something in mind on HOL and its use in semantics for which a docume
 
 \appendix
 
-%\section{Theory Listings}
+\ignore{
+\section{Theory Listings}
 
-%{
-%\let\Section\subsection
-%\def\subsection#1{}
-%\def\section#1{\Section{#1}}
-%\include{doc_theories}
+{
+\let\Section\subsection
+\def\subsection#1{}
+\def\section#1{\Section{#1}}
+\include{doc_theories}
 
-%}  %\let
+} %let
 
+}%ignore
 
 {\twocolumn[\section*{Index}\label{Index}]
 \addcontentsline{toc}{section}{Index}
